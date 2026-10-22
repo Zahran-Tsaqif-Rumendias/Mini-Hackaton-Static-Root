@@ -22,7 +22,10 @@ function initApp() {
   loadInitiatives();
   loadReports();
   calculateCarbon();
+<<<<<<< HEAD
   setupReportPhotoUpload();
+=======
+>>>>>>> origin/main
 
   // Periodic Live Telemetry Poll (every 4 seconds for heartbeat)
   setInterval(loadTelemetry, 4000);
@@ -74,7 +77,11 @@ async function loadTelemetry() {
   try {
     const res = await fetch(`${API_BASE}/api/telemetry/latest`);
     if (!res.ok) {
+<<<<<<< HEAD
       updateLiveBadge(true);
+=======
+      updateLiveBadge(false);
+>>>>>>> origin/main
       return;
     }
     const data = await res.json();
@@ -102,6 +109,7 @@ async function loadTelemetry() {
     document.getElementById("metricTrees").innerText = `${data.carbon.equivalent_trees_planted.toLocaleString()} Pohon`;
 
   } catch (err) {
+<<<<<<< HEAD
     updateLiveBadge(true);
   }
 }
@@ -112,6 +120,24 @@ function updateLiveBadge(isOnline = true) {
   el.innerHTML = '<span class="pulse-dot"></span><span>SENSOR LIVE</span>';
   el.title = "Sistem Monitoring Sensor Lingkungan ITSB EcoPulse (Live)";
   el.classList.remove("disconnected");
+=======
+    updateLiveBadge(false);
+    console.warn("Backend API belum terhubung. Jalankan: py run.py untuk live data.", err);
+  }
+}
+
+function updateLiveBadge(isOnline) {
+  const el = document.getElementById("liveSensorStatus");
+  if (!el) return;
+  if (isOnline) {
+    el.innerHTML = '<span class="pulse-dot"></span><span>SENSOR LIVE</span>';
+    el.title = "Terhubung ke Backend ITSB EcoPulse (Live)";
+    el.classList.remove("disconnected");
+  } else {
+    el.innerHTML = '<span class="pulse-dot" style="background:#f59e0b; box-shadow:0 0 0 rgba(245,158,11,0.5);"></span><span>OFFLINE (JALANKAN py run.py)</span>';
+    el.title = "Backend belum dijalankan. Jalankan `py run.py` di terminal.";
+  }
+>>>>>>> origin/main
 }
 
 // ----------------- FR-02: WASTE & REWARDS LOGIC -----------------
@@ -575,6 +601,7 @@ async function handleNewReportSubmit(event) {
   }
 }
 
+<<<<<<< HEAD
 // ----------------- REPORT PHOTO UPLOAD & PREVIEW -----------------
 function setupReportPhotoUpload() {
   const dropzone = document.getElementById("reportDropzone");
@@ -686,6 +713,8 @@ function setupReportPhotoUpload() {
   }
 }
 
+=======
+>>>>>>> origin/main
 // ----------------- NAVIGATION SCROLL SPY -----------------
 function setupScrollSpy() {
   const sections = document.querySelectorAll("section[id]");
