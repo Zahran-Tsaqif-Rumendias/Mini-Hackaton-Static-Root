@@ -870,6 +870,44 @@
               placeholder="Jelaskan kondisi kebocoran atau inefisiensi yang Anda temukan..." required></textarea>
           </div>
 
+          <div class="form-group">
+            <label class="form-label">Foto Bukti Lapangan (Opsional)</label>
+            <div class="file-dropzone" id="reportDropzone">
+              <input type="file" id="repPhoto" accept="image/png, image/jpeg, image/jpg" class="file-dropzone-input">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <div class="dropzone-title">Unggah Foto Bukti Lapangan (Opsional - JPG/PNG)</div>
+                <div class="dropzone-hint">Seret & lepas foto di sini, atau <span class="dropzone-browse">Pilih Berkas</span></div>
+              </div>
+            </div>
+
+            <div class="photo-preview-wrapper" id="photoPreviewWrapper" style="display: none;">
+              <div class="photo-preview-card">
+                <img id="photoPreviewImg" class="photo-preview-thumb" src="" alt="Thumbnail Foto Bukti">
+                <div class="photo-preview-details">
+                  <div class="photo-preview-filename" id="photoPreviewName">foto-bukti.jpg</div>
+                  <div class="photo-preview-meta">
+                    <span id="photoPreviewSize" class="photo-preview-size">0 KB</span>
+                    <span class="photo-preview-badge">Bukti Terlampir</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-remove-photo" id="btnRemovePhoto" title="Hapus atau pilih foto lain">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  Hapus / Ganti Foto
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="repName">Nama Pelapor</label>
