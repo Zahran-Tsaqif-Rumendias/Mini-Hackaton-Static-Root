@@ -164,7 +164,7 @@ function renderLeaderboard(leaderboard) {
 function updateEstimatedPoints() {
   const type = document.getElementById("wasteType").value;
   const weight = parseFloat(document.getElementById("wasteWeight").value) || 0;
-  
+
   const multipliers = {
     "Plastik/PET": 50,
     "Kertas/Karton": 50,
