@@ -1,0 +1,20 @@
+# PROYEK HACKATHON: ITSB ECOPULSE
+Tema: Lingkungan dan Keberlanjutan di Kampus Institut Teknologi Sains Bandung (ITSB)
+Lokasi: Kota Deltamas, Cikarang Pusat, Kabupaten Bekasi
+
+Status: SELESAI (Production-Ready Full-Stack)
+Akses Aplikasi: http://127.0.0.1:8000
+Dokumentasi API: http://127.0.0.1:8000/docs
+Folder Proyek: c:\Users\LENOVO\Documents\Hackaton\itsb-ecopulse
+
+Daftar 5 Modul Fungsional (Strict 1:1 FR-Screen Mapping):
+1. FR-01: Telemetri Lingkungan & Monitoring Energi Surya (Kokpit Live Sensor AQI, Solar PV Rooftop 120 kWp, Tandon Air Hujan 10.000 L, CO2 Offset).
+2. FR-02: Bank Sampah Sirkular & Gamifikasi Eco-Rewards (Pencatatan setoran pilah, leaderboard civitas, katalog penukaran merchandise).
+3. FR-03: Inisiatif Komunitas Hijau Kampus (Car-Free Campus, Penanaman Pohon Arboretum Deltamas, Zero Food-Waste Kantin).
+4. FR-04: Kalkulator Jejak Karbon Komuter Mandiri (Kalkulasi emisi harian, rekomendasi, penerbitan E-Certificate Green Civitas).
+5. FR-05: Lapor Kampus - Audit & Pengaduan Fasilitas Lingkungan (Lapor kran bocor, AC menyala, sampah liar dengan status transparan).
+
+Teknologi:
+- Backend: FastAPI (Python 3.14) + Uvicorn + SQLite
+- Frontend: Vanilla CSS3 Design System (60-30-10 Light Mode, Plus Jakarta Sans, SVG Charts) + Modular JS
+- Aset Visual: Google Imagen Photorealistic Campus Architecture (public/assets/images/hero-campus.jpg)
