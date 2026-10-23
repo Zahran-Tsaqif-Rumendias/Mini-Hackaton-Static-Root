@@ -1222,6 +1222,11 @@ async function handleNewReportSubmit(event) {
   btn.disabled = true;
   btn.innerText = "Mengirim...";
 
+  const photoPreviewImg = document.getElementById("photoPreviewImg");
+  const photoData = (photoPreviewImg && photoPreviewImg.src && photoPreviewImg.src.startsWith("data:image"))
+    ? photoPreviewImg.src
+    : null;
+
   const payload = {
     title: document.getElementById("repTitle").value,
     location: document.getElementById("repLocation").value,
@@ -1229,7 +1234,8 @@ async function handleNewReportSubmit(event) {
     priority: document.getElementById("repPriority").value,
     description: document.getElementById("repDesc").value,
     reporter_name: document.getElementById("repName").value,
-    reporter_contact: document.getElementById("repContact").value || "anonim@itsb.ac.id"
+    reporter_contact: document.getElementById("repContact").value || "anonim@itsb.ac.id",
+    photo_data: photoData
   };
 
   try {
@@ -1358,7 +1364,7 @@ function setupReportPhotoUpload() {
     removeBtn.addEventListener("click", resetPhotoUpload);
   }
 
-  const reportForm = document.getElementById("ecoReportForm");
+  const reportForm = document.getElementById("newReportForm") || document.getElementById("ecoReportForm");
   if (reportForm) {
     reportForm.addEventListener("reset", resetPhotoUpload);
   }

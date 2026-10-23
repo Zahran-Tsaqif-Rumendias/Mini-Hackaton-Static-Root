@@ -53,7 +53,7 @@ class RewardRedemptionRequest(BaseModel):
 
 
 class VolunteerRegistrationRequest(BaseModel):
-    initiative_id: int
+    initiative_id: Optional[int] = None
     full_name: str
     email: str
     role_department: str
@@ -74,6 +74,7 @@ class EcoReportRequest(BaseModel):
     reporter_name: str = Field(..., min_length=2, example="Fajar Hidayat")
     reporter_contact: Optional[str] = "fajar@students.itsb.ac.id"
     priority: Optional[str] = "Sedang"
+    photo_data: Optional[str] = None
 
 
 # ----------------- FR-01: TELEMETRY ENDPOINTS -----------------
