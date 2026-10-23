@@ -12,6 +12,7 @@ let selectedTransportMode = "Shuttle Bus Kampus Deltamas";
 let activeReportCategory = "Semua";
 
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   initApp();
 });
 
@@ -31,24 +32,206 @@ function initApp() {
   setupScrollSpy();
 }
 
-// ----------------- TOAST NOTIFICATIONS -----------------
-function showToast(message, type = "success") {
-  const container = document.getElementById("toastContainer");
+// ----------------- THEME / DARK MODE TOGGLE -----------------
+const THEME_STORAGE_KEY = "ecopulse-theme";
+
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initialTheme = savedTheme === "dark" || (!savedTheme && systemPrefersDark) ? "dark" : "light";
+
+  applyTheme(initialTheme);
+
+  const toggleBtn = document.getElementById("themeToggleBtn");
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const isCurrentlyDark = document.body.classList.contains("dark-mode");
+      const nextTheme = isCurrentlyDark ? "light" : "dark";
+      applyTheme(nextTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      showToast(
+        nextTheme === "dark" ? "Mode Gelap diaktifkan" : "Mode Terang diaktifkan",
+        "info",
+        2500,
+        "Tema Tampilan"
+      );
+    });
+  }
+
+  // Follow system theme changes if user has not explicitly set a preference
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    if (!localStorage.getItem(THEME_STORAGE_KEY)) {
+      applyTheme(e.matches ? "dark" : "light");
+    }
+  });
+}
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  if (isDark) {
+    document.body.classList.add("dark-mode");
+    document.documentElement.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+    document.documentElement.classList.remove("dark-mode");
+  }
+
+  const toggleBtn = document.getElementById("themeToggleBtn");
+  if (toggleBtn) {
+    toggleBtn.setAttribute("aria-label", isDark ? "Beralih ke mode terang" : "Beralih ke mode gelap");
+    toggleBtn.setAttribute("title", isDark ? "Beralih ke Mode Terang (Light)" : "Beralih ke Mode Gelap (Dark)");
+  }
+}
+
+// ----------------- TOAST NOTIFICATIONS SYSTEM -----------------
+/**
+ * Menampilkan floating toast notification elegan di sudut layar.
+ * @param {string|Object} message - Pesan notifikasi atau objek opsi { message, type, duration, title }
+ * @param {('success'|'error'|'info'|'warning')} [type='success'] - Jenis notifikasi
+ * @param {number} [duration=3500] - Durasi tampil dalam milidetik
+ * @param {string} [title] - Judul notifikasi opsional
+ * @returns {HTMLElement} Elemen toast yang dibuat
+ */
+function showToast(message, type = "success", duration = 3500, title = null) {
+  // Support options object signature: showToast({ message, type, duration, title })
+  if (typeof message === "object" && message !== null) {
+    const opts = message;
+    message = opts.message || "";
+    type = opts.type || "success";
+    duration = opts.duration !== undefined ? opts.duration : 3500;
+    title = opts.title || null;
+  }
+
+  let container = document.getElementById("toastContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    container.id = "toastContainer";
+    document.body.appendChild(container);
+  }
+
+  const icons = {
+    success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>`,
+    error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>`,
+    info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>`,
+    warning: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>`
+  };
+
+  const defaultTitles = {
+    success: "Berhasil",
+    error: "Terjadi Kendala",
+    info: "Informasi",
+    warning: "Peringatan"
+  };
+
+  const toastType = icons[type] ? type : "success";
+  const iconSvg = icons[toastType];
+  const displayTitle = title !== null ? title : defaultTitles[toastType];
+
   const toast = document.createElement("div");
-  toast.className = `toast toast-${type}`;
+  toast.className = `toast toast-${toastType}`;
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+
   toast.innerHTML = `
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="M20 6L9 17l-5-5"/>
-    </svg>
-    <span>${message}</span>
+    <div class="toast-icon">
+      ${iconSvg}
+    </div>
+    <div class="toast-content">
+      ${displayTitle ? `<div class="toast-title">${displayTitle}</div>` : ""}
+      <div class="toast-message">${message}</div>
+    </div>
+    <button type="button" class="toast-close" aria-label="Tutup notifikasi" title="Tutup">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="toast-progress">
+      <div class="toast-progress-bar"></div>
+    </div>
   `;
+
   container.appendChild(toast);
 
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateX(100%)";
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+  const progressBar = toast.querySelector(".toast-progress-bar");
+  const closeBtn = toast.querySelector(".toast-close");
+
+  let isDismissed = false;
+  let remainingTime = duration;
+  let startTime = Date.now();
+  let timerId = null;
+  let progressAnimation = null;
+
+  function dismiss() {
+    if (isDismissed) return;
+    isDismissed = true;
+    clearTimeout(timerId);
+    if (progressAnimation) progressAnimation.cancel();
+    toast.classList.add("toast-hiding");
+    setTimeout(() => {
+      toast.remove();
+    }, 320);
+  }
+
+  closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dismiss();
+  });
+
+  if (duration > 0) {
+    if (progressBar && typeof progressBar.animate === "function") {
+      progressAnimation = progressBar.animate(
+        [{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }],
+        { duration: duration, easing: "linear", fill: "forwards" }
+      );
+    }
+
+    const startTimer = (ms) => {
+      startTime = Date.now();
+      timerId = setTimeout(dismiss, ms);
+    };
+
+    startTimer(remainingTime);
+
+    // Pause timer on hover
+    toast.addEventListener("mouseenter", () => {
+      clearTimeout(timerId);
+      const elapsed = Date.now() - startTime;
+      remainingTime = Math.max(0, remainingTime - elapsed);
+      if (progressAnimation && progressAnimation.playState === "running") {
+        progressAnimation.pause();
+      }
+    });
+
+    // Resume timer on mouse leave
+    toast.addEventListener("mouseleave", () => {
+      if (remainingTime > 0 && !isDismissed) {
+        startTime = Date.now();
+        timerId = setTimeout(dismiss, remainingTime);
+        if (progressAnimation && progressAnimation.playState === "paused") {
+          progressAnimation.play();
+        }
+      }
+    });
+  }
+
+  return toast;
 }
 
 // ----------------- MODAL CONTROLS -----------------
