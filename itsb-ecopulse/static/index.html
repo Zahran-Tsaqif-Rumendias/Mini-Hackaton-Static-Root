@@ -158,6 +158,22 @@
           </p>
         </div>
 
+        <!-- Live IoT Sensor Telemetry Status Strip -->
+        <div class="telemetry-live-strip">
+          <div class="telemetry-strip-left">
+            <span class="pulse-dot"></span>
+            <span class="strip-label">STATUS SENSOR:</span>
+            <strong class="strip-status" id="telemetryStatusBadge">STREAMING AKTIF (4/4 NODE ONLINE)</strong>
+            <span class="strip-separator">•</span>
+            <span class="strip-location">Stasiun Gedung Rektorat & Lab Terpadu ITSB Deltamas</span>
+          </div>
+          <div class="telemetry-strip-right">
+            <span class="strip-clock-icon">⏱️</span>
+            <span>Sinkronisasi: <strong id="telemetrySyncTime">Menghubungkan...</strong></span>
+            <span class="strip-interval-pill">Setiap 3 Detik</span>
+          </div>
+        </div>
+
         <div class="telemetry-grid">
           <!-- Card 1: Solar Generation -->
           <div class="card telemetry-card" id="cardSolar">
@@ -327,15 +343,21 @@
               <path id="svgLoadLine" d="M 50,115 Q 180,110 310,105 T 570,90 T 700,92 T 880,98" fill="none"
                 stroke="#0284c7" stroke-width="2.5" stroke-dasharray="2,2" />
 
+              <!-- Dynamic Points & Markers Layer -->
+              <g id="svgDynamicChartGroup"></g>
+
               <!-- Timeline markers -->
-              <text x="50" y="220" font-size="11" fill="#79998b" text-anchor="middle">06:00</text>
-              <text x="180" y="220" font-size="11" fill="#79998b" text-anchor="middle">08:00</text>
-              <text x="310" y="220" font-size="11" fill="#79998b" text-anchor="middle">10:00</text>
-              <text x="440" y="220" font-size="11" fill="#79998b" text-anchor="middle">12:00</text>
-              <text x="570" y="220" font-size="11" fill="#79998b" text-anchor="middle">14:00</text>
-              <text x="700" y="220" font-size="11" fill="#79998b" text-anchor="middle">16:00</text>
-              <text x="830" y="220" font-size="11" fill="#79998b" text-anchor="middle">18:00</text>
+              <g id="svgTimelineMarkers">
+                <text x="50" y="220" font-size="11" fill="#79998b" text-anchor="middle">06:00</text>
+                <text x="180" y="220" font-size="11" fill="#79998b" text-anchor="middle">08:00</text>
+                <text x="310" y="220" font-size="11" fill="#79998b" text-anchor="middle">10:00</text>
+                <text x="440" y="220" font-size="11" fill="#79998b" text-anchor="middle">12:00</text>
+                <text x="570" y="220" font-size="11" fill="#79998b" text-anchor="middle">14:00</text>
+                <text x="700" y="220" font-size="11" fill="#79998b" text-anchor="middle">16:00</text>
+                <text x="830" y="220" font-size="11" fill="#79998b" text-anchor="middle">18:00</text>
+              </g>
             </svg>
+            <div class="chart-tooltip" id="chartTooltip"></div>
           </div>
         </div>
       </div>
@@ -870,47 +892,6 @@
               placeholder="Jelaskan kondisi kebocoran atau inefisiensi yang Anda temukan..." required></textarea>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Foto Bukti Lapangan (Opsional)</label>
-            <div class="file-dropzone" id="reportDropzone">
-              <input type="file" id="repPhoto" accept="image/png, image/jpeg, image/jpg" class="file-dropzone-input">
-              <div class="dropzone-content">
-                <div class="dropzone-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                </div>
-                <div class="dropzone-title">Unggah Foto Bukti Lapangan (Opsional - JPG/PNG)</div>
-                <div class="dropzone-hint">Seret & lepas foto di sini, atau <span class="dropzone-browse">Pilih
-                    Berkas</span></div>
-              </div>
-            </div>
-
-            <div class="photo-preview-wrapper" id="photoPreviewWrapper" style="display: none;">
-              <div class="photo-preview-card">
-                <img id="photoPreviewImg" class="photo-preview-thumb" src="" alt="Thumbnail Foto Bukti">
-                <div class="photo-preview-details">
-                  <div class="photo-preview-filename" id="photoPreviewName">foto-bukti.jpg</div>
-                  <div class="photo-preview-meta">
-                    <span id="photoPreviewSize" class="photo-preview-size">0 KB</span>
-                    <span class="photo-preview-badge">Bukti Terlampir</span>
-                  </div>
-                </div>
-                <button type="button" class="btn-remove-photo" id="btnRemovePhoto" title="Hapus atau pilih foto lain">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                  Hapus / Ganti Foto
-                </button>
-              </div>
-            </div>
-          </div>
-
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="repName">Nama Pelapor</label>
@@ -933,34 +914,180 @@
 
   <!-- MODAL: KLAIM REWARD (FR-02) -->
   <div class="modal-overlay" id="redeemModal">
-    <div class="modal-window">
-      <div class="modal-header">
-        <h3 class="modal-title" id="redeemModalTitle">Klaim Eco-Reward</h3>
-        <button class="modal-close-btn" onclick="closeModal('redeemModal')">&times;</button>
+    <div class="modal-window redeem-modal-window">
+
+      <!-- STEP 1: KONFIRMASI PENUKARAN -->
+      <div id="redeemConfirmStep">
+        <div class="modal-header">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:1.25rem;">🎁</span>
+            <h3 class="modal-title" id="redeemModalTitle">Konfirmasi Penukaran Eco-Reward</h3>
+          </div>
+          <button class="modal-close-btn" type="button" onclick="closeRedeemModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="redeemRewardForm" onsubmit="handleRedeemSubmit(event)">
+            <input type="hidden" id="redeemRewardId">
+            <input type="hidden" id="redeemRewardPoints">
+            <input type="hidden" id="redeemRewardTitle">
+
+            <!-- Item Summary Card -->
+            <div class="redeem-summary-card">
+              <div class="redeem-summary-top">
+                <span class="reward-badge-tag" id="redeemItemBadge">Merchandise</span>
+                <span class="reward-points-pill" id="redeemItemPoints">🪙 500 Pts</span>
+              </div>
+              <h4 class="redeem-item-name" id="redeemItemName">Tumbler Stainless Steel ITSB Eco-Campus</h4>
+              <p class="redeem-item-desc" id="redeemItemDesc">
+                Tumbler insulasi termal dengan logo grafir resmi ITSB Green Campus.
+              </p>
+              <div class="redeem-summary-footer">
+                <span class="redeem-stock-text" id="redeemItemStock">Tersedia: <strong>35 unit</strong></span>
+                <span class="redeem-point-notice">Poin akan dipotong setelah voucher terbit</span>
+              </div>
+            </div>
+
+            <!-- Civitas Identity Form -->
+            <div class="form-group" style="margin-top:1.25rem;">
+              <label class="form-label" for="redeemStudentId">NIM Mahasiswa / ID Civitas</label>
+              <input type="text" id="redeemStudentId" class="form-control" placeholder="Contoh: 12220014"
+                value="12220014" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="redeemStudentName">Nama Lengkap Penerima</label>
+              <input type="text" id="redeemStudentName" class="form-control" placeholder="Nama lengkap sesuai KTM/KTP"
+                value="Aditya Pratama" required>
+            </div>
+
+            <div class="redeem-prompt-alert">
+              <span style="font-size:1.1rem; line-height:1;">ℹ️</span>
+              <p style="font-size:0.8rem; margin:0; color:var(--color-ink-secondary); line-height:1.45;">
+                Klik <strong>Konfirmasi & Terbitkan Voucher</strong> untuk menerbitkan E-Voucher resmi dengan QR Code
+                untuk klaim langsung di Kampus ITSB Deltamas.
+              </p>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+              <button type="button" class="btn btn-secondary" onclick="closeRedeemModal()">Batal</button>
+              <button type="submit" class="btn btn-primary" id="btnConfirmRedeem">
+                <span>Konfirmasi & Terbitkan Voucher</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="modal-body">
-        <form id="redeemRewardForm" onsubmit="handleRedeemSubmit(event)">
-          <input type="hidden" id="redeemRewardId">
-          <p style="font-size:0.85rem; color:var(--color-ink-muted); margin-bottom:1.25rem;" id="redeemModalDesc">
-            Anda akan menukarkan poin dengan merchandise ini.
-          </p>
 
-          <div class="form-group">
-            <label class="form-label" for="redeemStudentId">NIM Mahasiswa / ID Staf</label>
-            <input type="text" id="redeemStudentId" class="form-control" placeholder="Contoh: 12220014" required>
+      <!-- STEP 2: E-VOUCHER BERHASIL DITERBITKAN -->
+      <div id="redeemSuccessStep" style="display:none;">
+        <div class="modal-header voucher-modal-header">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span class="voucher-success-icon">✓</span>
+            <div>
+              <h3 class="modal-title" style="color:var(--color-accent-forest); margin-bottom:0.15rem;">E-Voucher
+                Berhasil Diterbitkan!</h3>
+              <p style="font-size:0.75rem; color:var(--color-ink-muted); margin:0;">Klaim penukaran merchandise ramah
+                lingkungan ITSB</p>
+            </div>
+          </div>
+          <button class="modal-close-btn" type="button" onclick="closeRedeemModal()">&times;</button>
+        </div>
+
+        <div class="modal-body" style="padding-top:1.25rem;">
+          <!-- Official Campus E-Voucher Ticket Card -->
+          <div class="voucher-ticket-card" id="printableVoucherArea">
+            <div class="voucher-ticket-header">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <div class="voucher-logo-badge">ITSB</div>
+                <div>
+                  <div class="voucher-inst-title">INSTITUT TEKNOLOGI SAINS BANDUNG</div>
+                  <div class="voucher-inst-sub">EcoPulse • Program Sirkular & Keberlanjutan Kampus</div>
+                </div>
+              </div>
+              <span class="voucher-active-badge">VOUCHER AKTIF</span>
+            </div>
+
+            <div class="voucher-ticket-body">
+              <div class="voucher-item-details">
+                <span class="reward-badge-tag" id="voucherItemBadge">Merchandise</span>
+                <h3 class="voucher-reward-title" id="voucherRewardTitle">Tumbler Stainless Steel ITSB Eco-Campus</h3>
+                <div class="voucher-points-tag" id="voucherPointsBadge">🪙 500 Eco-Points Telah Dipotong</div>
+              </div>
+
+              <!-- QR Code & Unique Claim Code -->
+              <div class="voucher-qr-section">
+                <div class="voucher-qr-wrapper">
+                  <img id="voucherQrImage" class="voucher-qr-image" src=""
+                    alt="QR Code Penukaran Voucher ITSB Eco-Rewards" width="160" height="160">
+                  <span class="voucher-qr-hint">Scan di Loket Kampus</span>
+                </div>
+                <div class="voucher-code-block">
+                  <div class="voucher-code-caption">KODE KLAIM E-VOUCHER</div>
+                  <div class="voucher-code-display" id="voucherClaimCode">ITSB-REWARD-84920</div>
+                  <div class="voucher-meta-grid">
+                    <div>
+                      <span class="voucher-meta-label">Nama Penerima:</span>
+                      <strong class="voucher-meta-val" id="voucherRecipientName">Aditya Pratama</strong>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">NIM / ID Staf:</span>
+                      <strong class="voucher-meta-val" id="voucherRecipientId">12220014</strong>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">Waktu Diterbitkan:</span>
+                      <span class="voucher-meta-val" id="voucherIssuedAt">22 Okt 2026, 22:30 WIB</span>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">Status Voucher:</span>
+                      <span class="voucher-meta-val" style="color:var(--color-accent-forest); font-weight:700;">Belum
+                        Ditukarkan</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perforated Divider Effect -->
+            <div class="voucher-perforated-line">
+              <span class="notch notch-left"></span>
+              <span class="notch notch-right"></span>
+            </div>
+
+            <!-- Campus Pickup Instructions -->
+            <div class="voucher-instructions">
+              <h5 class="instructions-heading">
+                <span>📍</span> Instruksi Penukaran di Kampus ITSB Deltamas:
+              </h5>
+              <ol class="instructions-list">
+                <li>Tunjukkan gambar <strong>QR Code</strong> atau sebutkan <strong>Kode Klaim E-Voucher</strong> di
+                  atas kepada petugas Sustainability Center / Bank Sampah Sirkular di <strong>Lantai 1 Gedung Rektorat
+                    Kampus ITSB Deltamas, Cikarang</strong>.</li>
+                <li>Tunjukkan <strong>Kartu Tanda Mahasiswa (KTM)</strong> atau identitas civitas akademika aktif Anda
+                  sebagai bukti kepemilikan akun EcoPulse.</li>
+                <li>Layanan penukaran merchandise dibuka setiap hari kerja (<strong>Senin – Jumat, pukul 08.30 – 16.00
+                    WIB</strong>).</li>
+                <li>E-Voucher ini berlaku selama <strong>14 hari kalender</strong> sejak waktu penerbitan.</li>
+              </ol>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="redeemStudentName">Nama Lengkap</label>
-            <input type="text" id="redeemStudentName" class="form-control" placeholder="Nama lengkap penerima" required>
+          <!-- Action Buttons -->
+          <div class="voucher-modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="printVoucher()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span>Cetak / Simpan Voucher</span>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="closeRedeemModal()">
+              <span>Selesai & Tutup</span>
+            </button>
           </div>
-
-          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
-            <button type="button" class="btn btn-secondary" onclick="closeModal('redeemModal')">Batal</button>
-            <button type="submit" class="btn btn-primary">Konfirmasi Penukaran</button>
-          </div>
-        </form>
+        </div>
       </div>
+
     </div>
   </div>
 
