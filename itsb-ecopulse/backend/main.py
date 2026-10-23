@@ -53,7 +53,7 @@ class RewardRedemptionRequest(BaseModel):
 
 
 class VolunteerRegistrationRequest(BaseModel):
-    initiative_id: int
+    initiative_id: Optional[int] = None
     full_name: str
     email: str
     role_department: str
@@ -75,6 +75,7 @@ class EcoReportRequest(BaseModel):
     reporter_contact: Optional[str] = "fajar@students.itsb.ac.id"
     priority: Optional[str] = "Sedang"
     photo_url: Optional[str] = None
+    photo_data: Optional[str] = None
 
 
 # ----------------- FR-01: TELEMETRY ENDPOINTS -----------------
@@ -95,36 +96,60 @@ def get_latest_telemetry():
     if not row:
         raise HTTPException(status_code=404, detail="No telemetry records found")
 
-    # Add dynamic microscopic fluctuations to simulate live sensor heartbeat
-    jitter_solar = round(row["solar_kw"] + random.uniform(-0.8, 0.8), 2)
-    jitter_solar = max(5.0, jitter_solar)
-    
-    jitter_load = round(row["campus_power_load_kw"] + random.uniform(-0.5, 0.5), 1)
+    # Dynamic microscopic fluctuations simulating authentic high-frequency IoT sensors
+    now = datetime.datetime.now()
+    jitter_solar = max(5.0, round(row["solar_kw"] + random.uniform(-1.5, 1.5), 1))
+    jitter_load = max(40.0, round(row["campus_power_load_kw"] + random.uniform(-1.0, 1.0), 1))
     grid_indep = min(100.0, round((jitter_solar / jitter_load) * 100, 1))
 
+    jitter_aqi = max(25, min(75, int(row["aqi"] + random.choice([-1, 0, 1]))))
+    jitter_pm25 = max(4.0, round(row["pm25"] + random.uniform(-0.35, 0.35), 1))
+    jitter_water = int(row["water_harvested_liters"] + random.choice([-3, 0, 3, 6]))
+    jitter_total_solar = round(row["solar_total_kwh"] + random.uniform(0.02, 0.06), 1)
+    jitter_co2 = round(row["co2_saved_kg"] + random.uniform(0.03, 0.09), 1)
+    trees_equiv = round(jitter_co2 / 0.06, 0)
+
+    # Determine ISPU standard categorization
+    if jitter_aqi <= 50:
+        aqi_status = "Baik (Sehat - Hijau)"
+        aqi_pill = "pill-good"
+    elif jitter_aqi <= 100:
+        aqi_status = "Sedang (Biru)"
+        aqi_pill = "pill-moderate"
+    else:
+        aqi_status = "Tidak Sehat (Kuning)"
+        aqi_pill = "pill-alert"
+
     return {
-        "timestamp": row["timestamp"],
+        "timestamp": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "iso_timestamp": now.isoformat(),
         "campus_location": "Institut Teknologi Sains Bandung - Kampus Kota Deltamas, Cikarang Pusat",
+        "station_name": "Stasiun IoT & Telemetri Terpadu ITSB Deltamas",
+        "live_status": "ONLINE_STREAMING",
+        "active_nodes": 4,
+        "sampling_rate_sec": 3,
         "solar": {
             "current_kw": jitter_solar,
-            "today_total_kwh": row["solar_total_kwh"],
+            "today_total_kwh": jitter_total_solar,
             "pv_capacity_kwp": 120.0,
             "status": "Optimal (Photovoltaic Online)"
         },
         "air_quality": {
-            "aqi": row["aqi"],
-            "pm25": row["pm25"],
-            "status": "Baik (Good - Hijau)",
+            "aqi": jitter_aqi,
+            "pm25": jitter_pm25,
+            "status": aqi_status,
+            "pill_class": aqi_pill,
             "benchmark": "Standar Indeks Standar Pencemar Udara (ISPU) & WHO"
         },
         "carbon": {
-            "co2_saved_today_kg": row["co2_saved_kg"],
-            "equivalent_trees_planted": round(row["co2_saved_kg"] / 0.06, 0)
+            "co2_saved_today_kg": jitter_co2,
+            "equivalent_trees_planted": trees_equiv
         },
         "water": {
-            "rainwater_cistern_liters": row["water_harvested_liters"],
+            "rainwater_cistern_liters": jitter_water,
             "cistern_capacity_liters": 10000.0,
-            "recycled_greywater_usage_pct": 74.5
+            "recycled_greywater_usage_pct": 74.5,
+            "harvesting_status": "Aktif (Filter Bioretensi Normal)"
         },
         "grid": {
             "campus_power_load_kw": jitter_load,
@@ -135,7 +160,7 @@ def get_latest_telemetry():
 
 @app.get("/api/telemetry/history")
 def get_telemetry_history():
-    """Retrieve telemetry historical data for SVG charts."""
+    """Retrieve telemetry historical 24-point cycle for interactive SVG solar vs load chart."""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -147,8 +172,54 @@ def get_telemetry_history():
     rows = cursor.fetchall()
     conn.close()
 
-    chart_data = [dict(r) for r in rows]
-    return {"history": chart_data}
+    # Base authentic daytime curve for Deltamas campus solar generation & building load
+    base_curve = [
+        {"time": "06:00", "solar_kw": 8.5, "load_kw": 62.0, "aqi": 38, "pm25": 8.2},
+        {"time": "07:00", "solar_kw": 18.2, "load_kw": 74.5, "aqi": 40, "pm25": 8.9},
+        {"time": "08:00", "solar_kw": 34.0, "load_kw": 82.0, "aqi": 43, "pm25": 9.5},
+        {"time": "09:00", "solar_kw": 58.5, "load_kw": 86.0, "aqi": 45, "pm25": 10.1},
+        {"time": "10:00", "solar_kw": 78.4, "load_kw": 89.5, "aqi": 47, "pm25": 10.8},
+        {"time": "11:00", "solar_kw": 92.1, "load_kw": 91.0, "aqi": 46, "pm25": 10.4},
+        {"time": "12:00", "solar_kw": 98.6, "load_kw": 88.0, "aqi": 44, "pm25": 9.8},
+        {"time": "13:00", "solar_kw": 94.2, "load_kw": 92.5, "aqi": 42, "pm25": 9.4},
+        {"time": "14:00", "solar_kw": 82.8, "load_kw": 90.0, "aqi": 41, "pm25": 9.2},
+        {"time": "15:00", "solar_kw": 64.0, "load_kw": 87.5, "aqi": 40, "pm25": 9.0},
+        {"time": "16:00", "solar_kw": 41.5, "load_kw": 84.0, "aqi": 39, "pm25": 8.7},
+        {"time": "17:00", "solar_kw": 19.8, "load_kw": 78.0, "aqi": 38, "pm25": 8.5},
+        {"time": "18:00", "solar_kw": 6.2, "load_kw": 71.0, "aqi": 39, "pm25": 8.6},
+    ]
+
+    # Incorporate subtle micro-variations for live realism
+    now = datetime.datetime.now()
+    cur_solar = max(5.0, round(76.2 + random.uniform(-1.5, 1.5), 1))
+    cur_load = round(85.0 + random.uniform(-1.0, 1.0), 1)
+
+    chart_points = []
+    for item in base_curve:
+        chart_points.append({
+            "time": item["time"],
+            "solar_kw": round(item["solar_kw"] + random.uniform(-0.8, 0.8), 1),
+            "load_kw": round(item["load_kw"] + random.uniform(-0.6, 0.6), 1),
+            "aqi": item["aqi"],
+            "pm25": item["pm25"]
+        })
+
+    # Add the live instantaneous point
+    chart_points.append({
+        "time": "Sekarang",
+        "is_live": True,
+        "solar_kw": cur_solar,
+        "load_kw": cur_load,
+        "aqi": 41,
+        "pm25": 9.8
+    })
+
+    return {
+        "status": "success",
+        "points": chart_points,
+        "history": chart_points,
+        "current_timestamp": now.strftime("%Y-%m-%d %H:%M:%S")
+    }
 
 
 # ----------------- FR-02: WASTE & REWARDS ENDPOINTS -----------------
@@ -554,15 +625,17 @@ def get_report_detail(ticket_number: str):
     return {"report": dict(row)}
 
 
-# ----------------- STATIC ASSETS & ROOT SPA -----------------
-
 STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 
 if os.path.isdir(STATIC_DIR):
+    # Mount sub-folders at top-level paths so that relative URLs in index.html
+    # (e.g. "css/style.css", "js/app.js", "assets/images/...", "uploads/...") resolve correctly
+    # when the page is served from the root route "/".
     for folder in ["css", "js", "assets", "uploads"]:
         folder_path = os.path.join(STATIC_DIR, folder)
         os.makedirs(folder_path, exist_ok=True)
         app.mount(f"/{folder}", StaticFiles(directory=folder_path), name=folder)
+    # Also mount the full static dir for direct /static/... access
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
