@@ -43,6 +43,7 @@
 
   /* Shadows & Elevation */
   --shadow-subtle: 0 1px 3px rgba(13, 31, 23, 0.05);
+  --shadow-sm: 0 1px 4px rgba(13, 31, 23, 0.06), 0 1px 2px rgba(13, 31, 23, 0.04);
   --shadow-card: 0 4px 12px -2px rgba(13, 31, 23, 0.05), 0 2px 6px -1px rgba(13, 31, 23, 0.03);
   --shadow-card-hover: 0 12px 24px -4px rgba(13, 31, 23, 0.08), 0 4px 8px -2px rgba(13, 31, 23, 0.04);
   --shadow-modal: 0 20px 35px -10px rgba(13, 31, 23, 0.18), 0 10px 15px -5px rgba(13, 31, 23, 0.08);
@@ -1087,6 +1088,40 @@ body {
 .status-selesai {
   background-color: var(--color-accent-light);
   color: var(--color-accent-forest);
+}
+
+/* Report Card Photo Evidence Display */
+.report-photo-attachment {
+  margin: 0.85rem 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border-hairline);
+  background: var(--color-canvas-subtle);
+  position: relative;
+}
+
+.report-photo-thumb {
+  width: 100%;
+  max-height: 190px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: transform var(--transition-normal);
+}
+
+.report-photo-thumb:hover {
+  transform: scale(1.02);
+}
+
+.report-photo-caption {
+  font-size: 0.7rem;
+  color: var(--color-ink-muted);
+  padding: 0.35rem 0.65rem;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-hairline);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 /* Modal Window */

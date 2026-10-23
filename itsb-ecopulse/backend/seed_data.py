@@ -197,15 +197,15 @@ def seed_all():
     for t_num, title, loc, cat, desc, r_name, r_contact, st, pr, c_at, u_at, res_notes in reports:
         cursor.execute("""
             INSERT INTO eco_reports 
-            (ticket_number, title, location, category, description, reporter_name, reporter_contact, status, priority, created_at, updated_at, resolution_notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (ticket_number, title, location, category, description, reporter_name, reporter_contact, status, priority, created_at, updated_at, resolution_notes, photo_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)
         """, (t_num, title, loc, cat, desc, r_name, r_contact, st, pr, c_at, u_at, res_notes))
 
     # 6. Seed Carbon Calculation Log (FR-04)
     cursor.execute("""
         INSERT INTO carbon_calculations 
         (user_role, commute_distance_km, transport_mode, electricity_hours, total_emission_kg, trees_needed, certificate_code, created_at)
-        VALUES ('Mahasiswa', 18.5, 'Shuttle Bus Kampus Deltamas', 4.0, 1.42, 0.08, 'ITSB-PLEDGE-9841', ?)
+        VALUES ('Mahasiswa', 18.5, 'Shuttle Bus Kampus Deltamas', 4.0, 1.42, 23.7, 'ITSB-PLEDGE-9841', ?)
     """, ((now - datetime.timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S"),))
 
     conn.commit()
