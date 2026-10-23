@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITSB EcoPulse — Platform Keberlanjutan & Kampus Hijau Institut Teknologi Sains Bandung</title>
+  <meta name="description"
+    content="Sistem monitoring telemetri lingkungan cerdas, bank sampah sirkular, inisiatif hijau, dan kalkulator jejak karbon di kampus Institut Teknologi Sains Bandung (ITSB) Kota Deltamas Cikarang.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Cegah Flash of Unstyled Theme (FOUC) saat reload di Dark Mode -->
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem("ecopulse-theme");
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.classList.add("dark-mode");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-wrapper">
+      <a href="#hero" class="brand-group" id="brandLogo">
+        <div class="brand-emblem">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+        <div class="brand-text-col">
+          <div class="brand-name">
+            ITSB EcoPulse
+            <span class="brand-badge">DELTAMAS</span>
+          </div>
+          <span class="brand-subtitle">Eco-Industry Oriented University</span>
+        </div>
+      </a>
+
+      <nav aria-label="Navigasi Utama">
+        <ul class="nav-links">
+          <li><a href="#telemetry" class="nav-link active" id="navTelemetry">📊 Telemetri</a></li>
+          <li><a href="#waste" class="nav-link" id="navWaste">♻️ Bank Sampah</a></li>
+          <li><a href="#initiatives" class="nav-link" id="navInitiatives">🌱 Inisiatif</a></li>
+          <li><a href="#calculator" class="nav-link" id="navCalculator">🧮 Kalkulator Karbon</a></li>
+          <li><a href="#reports" class="nav-link" id="navReports">📢 Lapor Kampus</a></li>
+        </ul>
+              <!-- Tombol Toggle Dark Mode (Sakelar Matahari / Bulan) -->
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Beralih Mode Gelap/Terang" title="Beralih Mode Gelap/Terang">
+          <span class="theme-icon sun-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </span>
+          <span class="theme-icon moon-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
+        </button>
+      </nav>
+
+      <div class="nav-cta-group">
+        <div class="live-indicator" id="liveSensorStatus">
+          <span class="pulse-dot"></span>
+          <span>SENSOR LIVE</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btnQuickReport" onclick="openModal('reportModal')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Lapor Isu
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-text-col">
+          <div class="hero-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            Kampus Hijau Berkelanjutan • Kota Deltamas
+          </div>
+          <h1 class="hero-title">
+            Wujudkan Kampus <span class="highlight">Net-Zero</span> di Institut Teknologi Sains Bandung
+          </h1>
+          <p class="hero-description">
+            Platform data cerdas yang memantau telemetri mikroklimat, produksi energi surya rooftop, sirkularitas daur
+            ulang, dan aksi nyata civitas akademika ITSB secara transparan dan terukur.
+          </p>
+
+          <div class="hero-cta-bar">
+            <a href="#telemetry" class="btn btn-primary">
+              Lihat Telemetri Live
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+            <a href="#calculator" class="btn btn-secondary">
+              Hitung Jejak Karbonmu
+            </a>
+          </div>
+
+          <div class="hero-stats-ribbon">
+            <div class="hero-stat-item">
+              <span class="hero-stat-value" id="heroStatSolar">120 kWp</span>
+              <span class="hero-stat-label">Solar PV Rooftop</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-value" id="heroStatRecycle">86.4%</span>
+              <span class="hero-stat-label">Efisiensi Daur Ulang</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-value" id="heroStatWater">10.000 L</span>
+              <span class="hero-stat-label">Pemanenan Air Hujan</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-value" id="heroStatCarbon">430 kg</span>
+              <span class="hero-stat-label">CO₂ Terhindar Hari Ini</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual (Google Imagen Bespoke Campus Image) -->
+        <div class="hero-visual-col">
+          <div class="hero-visual-frame">
+            <img src="assets/images/ITSB.jpg"
+              alt="Kampus Ramah Lingkungan Institut Teknologi Sains Bandung Deltamas Cikarang" class="hero-visual-img"
+              id="heroCampusImg">
+
+            <!-- Floating Live Telemetry Cards -->
+            <div class="hero-float-card hero-float-top">
+              <div class="float-icon" style="background:#ecfdf5; color:#059669;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                </svg>
+              </div>
+              <div>
+                <div class="float-title">AQI DELTAMAS CIKARANG</div>
+                <div class="float-value" id="heroFloatAqi">41 • Baik (Sehat)</div>
+              </div>
+            </div>
+
+            <div class="hero-float-card hero-float-bottom">
+              <div class="float-icon" style="background:#fef3c7; color:#d97706;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path
+                    d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              </div>
+              <div>
+                <div class="float-title">SOLAR ROOFTOP YIELD</div>
+                <div class="float-value" id="heroFloatSolar">76.2 kW • 89.6% Mandiri</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FR-01: TELEMETRI LINGKUNGAN KAMPUS -->
+    <section class="section-block" id="telemetry">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FR-01 • Telemetri Real-Time</div>
+          <h2 class="section-title">Kokpit Telemetri Lingkungan & Energi Kampus ITSB</h2>
+          <p class="section-subtitle">
+            Integrasi sensor Internet of Things (IoT) pada Gedung Rektorat, Laboratorium Terpadu, dan Area Konservasi
+            Deltamas.
+          </p>
+        </div>
+
+        <!-- Live IoT Sensor Telemetry Status Strip -->
+        <div class="telemetry-live-strip">
+          <div class="telemetry-strip-left">
+            <span class="pulse-dot"></span>
+            <span class="strip-label">STATUS SENSOR:</span>
+            <strong class="strip-status" id="telemetryStatusBadge">STREAMING AKTIF (4/4 NODE ONLINE)</strong>
+            <span class="strip-separator">•</span>
+            <span class="strip-location">Stasiun Gedung Rektorat & Lab Terpadu ITSB Deltamas</span>
+          </div>
+          <div class="telemetry-strip-right">
+            <span class="strip-clock-icon">⏱️</span>
+            <span>Sinkronisasi: <strong id="telemetrySyncTime">Menghubungkan...</strong></span>
+            <span class="strip-interval-pill">Setiap 3 Detik</span>
+          </div>
+        </div>
+
+        <div class="telemetry-grid">
+          <!-- Card 1: Solar Generation -->
+          <div class="card telemetry-card" id="cardSolar">
+            <div>
+              <div class="card-top">
+                <div class="card-icon-box icon-solar">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2" />
+                  </svg>
+                </div>
+                <span class="card-status-pill pill-solar">Rooftop PV</span>
+              </div>
+              <div class="card-meta-label">Daya Surya Saat Ini</div>
+              <div class="card-metric-value">
+                <span id="metricSolarKw">76.2</span>
+                <span class="card-metric-unit">kW</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" id="fillSolar"
+                  style="width: 63.5%; background: var(--color-solar-amber);"></div>
+              </div>
+            </div>
+            <div class="card-foot-text">
+              <span>Total Hari Ini: <strong id="metricSolarTotal">638.2 kWh</strong></span>
+              <span id="metricSolarStatus">Optimal</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Air Quality AQI -->
+          <div class="card telemetry-card" id="cardAqi">
+            <div>
+              <div class="card-top">
+                <div class="card-icon-box icon-air">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                  </svg>
+                </div>
+                <span class="card-status-pill pill-good">Udara Bersih</span>
+              </div>
+              <div class="card-meta-label">Indeks Kualitas Udara (AQI)</div>
+              <div class="card-metric-value">
+                <span id="metricAqi">41</span>
+                <span class="card-metric-unit">PM2.5: <span id="metricPm25">9.8</span> µg/m³</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" id="fillAqi"
+                  style="width: 20%; background: var(--color-accent-emerald);"></div>
+              </div>
+            </div>
+            <div class="card-foot-text">
+              <span>Kategori: <strong id="metricAqiLabel">Baik (Hijau)</strong></span>
+              <span>Stasiun Deltamas</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Water Cistern -->
+          <div class="card telemetry-card" id="cardWater">
+            <div>
+              <div class="card-top">
+                <div class="card-icon-box icon-water">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                  </svg>
+                </div>
+                <span class="card-status-pill pill-water">Rain Harvest</span>
+              </div>
+              <div class="card-meta-label">Tandon Pemanenan Air Hujan</div>
+              <div class="card-metric-value">
+                <span id="metricWater">4,320</span>
+                <span class="card-metric-unit">Liter</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" id="fillWater"
+                  style="width: 43.2%; background: var(--color-water-cyan);"></div>
+              </div>
+            </div>
+            <div class="card-foot-text">
+              <span>Kapasitas: <strong>10.000 L</strong></span>
+              <span>Daur Ulang: 74.5%</span>
+            </div>
+          </div>
+
+          <!-- Card 4: CO2 Offset -->
+          <div class="card telemetry-card" id="cardCarbon">
+            <div>
+              <div class="card-top">
+                <div class="card-icon-box icon-carbon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22v-7l-2-2" />
+                    <path d="M17 8a5 5 0 0 0-10 0c0 5 3 7 5 7s5-2 5-7z" />
+                  </svg>
+                </div>
+                <span class="card-status-pill pill-good">Offset Emisi</span>
+              </div>
+              <div class="card-meta-label">Reduksi Emisi Karbon (Hari Ini)</div>
+              <div class="card-metric-value">
+                <span id="metricCo2">430.7</span>
+                <span class="card-metric-unit">kg CO₂e</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" style="width: 78%; background: var(--color-accent-forest);"></div>
+              </div>
+            </div>
+            <div class="card-foot-text">
+              <span>Ekuivalen: <strong id="metricTrees">7,178 Pohon</strong></span>
+              <span>Standar GBCI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bespoke Interactive SVG Telemetry Solar vs Load Chart -->
+        <div class="telemetry-chart-container">
+          <div class="chart-header-row">
+            <div>
+              <h3 class="chart-title">Kurva Generasi Energi Surya Rooftop vs Beban Listrik Kampus</h3>
+              <p style="font-size: 0.78rem; color: var(--color-ink-muted);">Dinamika produksi solar panel fotovoltaik
+                (kW) terhadap konsumsi energi aktif gedung ITSB 24 jam terakhir.</p>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-dot legend-solar"></span>
+                <span>Produksi Solar PV (kW)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot legend-load"></span>
+                <span>Beban Listrik Kampus (kW)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SVG Visual Canvas -->
+          <div class="svg-chart-wrapper" id="svgChartWrapper">
+            <svg viewBox="0 0 900 240" id="telemetrySvg">
+              <defs>
+                <linearGradient id="solarGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0" />
+                </linearGradient>
+                <linearGradient id="loadGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0284c7" stop-opacity="0.2" />
+                  <stop offset="100%" stop-color="#0284c7" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              <!-- Grid Horizontal Lines -->
+              <line x1="50" y1="40" x2="880" y2="40" stroke="#e2ebe5" stroke-dasharray="4,4" />
+              <line x1="50" y1="90" x2="880" y2="90" stroke="#e2ebe5" stroke-dasharray="4,4" />
+              <line x1="50" y1="140" x2="880" y2="140" stroke="#e2ebe5" stroke-dasharray="4,4" />
+              <line x1="50" y1="190" x2="880" y2="190" stroke="#e2ebe5" />
+
+              <!-- Axis Labels -->
+              <text x="25" y="45" font-size="11" fill="#79998b" font-family="Plus Jakarta Sans">100kW</text>
+              <text x="25" y="95" font-size="11" fill="#79998b" font-family="Plus Jakarta Sans">75kW</text>
+              <text x="25" y="145" font-size="11" fill="#79998b" font-family="Plus Jakarta Sans">50kW</text>
+              <text x="25" y="195" font-size="11" fill="#79998b" font-family="Plus Jakarta Sans">0kW</text>
+
+              <!-- Area Fills -->
+              <polygon id="svgSolarArea" fill="url(#solarGradient)"
+                points="50,190 180,165 310,130 440,80 570,45 700,60 830,95 880,190" />
+              <polygon id="svgLoadArea" fill="url(#loadGradient)"
+                points="50,190 180,110 310,105 440,95 570,90 700,92 830,98 880,190" />
+
+              <!-- Curve Lines -->
+              <path id="svgSolarLine" d="M 50,190 Q 180,165 310,130 T 570,45 T 700,60 T 880,115" fill="none"
+                stroke="#d97706" stroke-width="3" />
+              <path id="svgLoadLine" d="M 50,115 Q 180,110 310,105 T 570,90 T 700,92 T 880,98" fill="none"
+                stroke="#0284c7" stroke-width="2.5" stroke-dasharray="2,2" />
+
+              <!-- Dynamic Points & Markers Layer -->
+              <g id="svgDynamicChartGroup"></g>
+
+              <!-- Timeline markers -->
+              <g id="svgTimelineMarkers">
+                <text x="50" y="220" font-size="11" fill="#79998b" text-anchor="middle">06:00</text>
+                <text x="180" y="220" font-size="11" fill="#79998b" text-anchor="middle">08:00</text>
+                <text x="310" y="220" font-size="11" fill="#79998b" text-anchor="middle">10:00</text>
+                <text x="440" y="220" font-size="11" fill="#79998b" text-anchor="middle">12:00</text>
+                <text x="570" y="220" font-size="11" fill="#79998b" text-anchor="middle">14:00</text>
+                <text x="700" y="220" font-size="11" fill="#79998b" text-anchor="middle">16:00</text>
+                <text x="830" y="220" font-size="11" fill="#79998b" text-anchor="middle">18:00</text>
+              </g>
+            </svg>
+            <div class="chart-tooltip" id="chartTooltip"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FR-02: BANK SAMPAH SIRKULAR & ECO-REWARDS -->
+    <section class="section-block" id="waste">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FR-02 • Sirkularitas & Gamifikasi</div>
+          <h2 class="section-title">Bank Sampah Sirkular & Eco-Rewards Civitas ITSB</h2>
+          <p class="section-subtitle">
+            Pilah sampah dari sumbernya, kumpulkan Eco-Points, dan tukarkan dengan merchandise ramah lingkungan serta
+            voucher kantin kampus.
+          </p>
+        </div>
+
+        <!-- Quick Summary Ribbon -->
+        <div class="waste-stats-banner">
+          <div class="waste-stat-card">
+            <div class="waste-stat-icon">⚖️</div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-ink-muted); font-weight:600;">Total Terkelola</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--color-ink);" id="wasteStatTotalKg">31.9 kg
+              </div>
+            </div>
+          </div>
+
+          <div class="waste-stat-card">
+            <div class="waste-stat-icon">🪙</div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-ink-muted); font-weight:600;">Eco-Points Beredar</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--color-accent-forest);" id="wasteStatPoints">
+                1,755 Pts</div>
+            </div>
+          </div>
+
+          <div class="waste-stat-card">
+            <div class="waste-stat-icon">🌱</div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-ink-muted); font-weight:600;">Kompos Kantin</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--color-ink);" id="wasteStatCompost">8.5 kg
+              </div>
+            </div>
+          </div>
+
+          <div class="waste-stat-card">
+            <div class="waste-stat-icon">🔄</div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--color-ink-muted); font-weight:600;">Efisiensi 3R Kampus</div>
+              <div style="font-size:1.35rem; font-weight:800; color:var(--color-ink);">86.4%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Column Split: Donut Composition | Form Setor | Leaderboard -->
+        <div class="waste-split-layout">
+          <!-- Donut Breakdown -->
+          <div class="card">
+            <h3 style="font-size:1rem; font-weight:700; margin-bottom:1rem;">Komposisi Sampah Kampus</h3>
+            <div style="display:flex; justify-content:center; align-items:center; height:180px;">
+              <svg width="170" height="170" viewBox="0 0 42 42">
+                <circle class="donut-ring" cx="21" cy="21" r="15.915" fill="transparent" stroke="#f0f5f2"
+                  stroke-width="4.5"></circle>
+                <!-- Organik 35% -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#059669" stroke-width="4.5"
+                  stroke-dasharray="35 65" stroke-dashoffset="25"></circle>
+                <!-- Kertas 30% -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#0284c7" stroke-width="4.5"
+                  stroke-dasharray="30 70" stroke-dashoffset="90"></circle>
+                <!-- Plastik 25% -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#d97706" stroke-width="4.5"
+                  stroke-dasharray="25 75" stroke-dashoffset="60"></circle>
+                <!-- E-Waste & Logam 10% -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#7c3aed" stroke-width="4.5"
+                  stroke-dasharray="10 90" stroke-dashoffset="35"></circle>
+                <text x="50%" y="48%" text-anchor="middle" font-size="4.5" font-weight="800" fill="#0d1f17"
+                  font-family="Plus Jakarta Sans">86.4%</text>
+                <text x="50%" y="60%" text-anchor="middle" font-size="2.6" font-weight="600" fill="#79998b"
+                  font-family="Plus Jakarta Sans">Daur Ulang</text>
+              </svg>
+            </div>
+            <div
+              style="font-size:0.75rem; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.75rem;">
+              <div style="display:flex; align-items:center; gap:0.35rem;"><span
+                  style="width:8px;height:8px;border-radius:50%;background:#059669;"></span>Organik (35%)</div>
+              <div style="display:flex; align-items:center; gap:0.35rem;"><span
+                  style="width:8px;height:8px;border-radius:50%;background:#0284c7;"></span>Kertas (30%)</div>
+              <div style="display:flex; align-items:center; gap:0.35rem;"><span
+                  style="width:8px;height:8px;border-radius:50%;background:#d97706;"></span>Plastik PET (25%)</div>
+              <div style="display:flex; align-items:center; gap:0.35rem;"><span
+                  style="width:8px;height:8px;border-radius:50%;background:#7c3aed;"></span>E-Waste (10%)</div>
+            </div>
+          </div>
+
+          <!-- Digital Deposit Form -->
+          <div class="card">
+            <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:0.35rem;">Formulir Setor Sampah Kampus</h3>
+            <p style="font-size:0.78rem; color:var(--color-ink-muted); margin-bottom:1.15rem;">Setorkan sampah pilah di
+              drop point kampus untuk mendapatkan Eco-Points langsung.</p>
+
+            <form id="wasteDepositForm" onsubmit="handleWasteDeposit(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="wasteStudentId">NIM Mahasiswa</label>
+                  <input type="text" id="wasteStudentId" class="form-control" placeholder="Contoh: 12220014" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="wasteStudentName">Nama Lengkap</label>
+                  <input type="text" id="wasteStudentName" class="form-control" placeholder="Nama mahasiswa" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="wasteDepartment">Program Studi / Fakultas</label>
+                <select id="wasteDepartment" class="form-control" required>
+                  <option value="Teknik Metalurgi">Teknik Metalurgi</option>
+                  <option value="Teknik Sipil">Teknik Sipil</option>
+                  <option value="Desain Produk">Desain Produk</option>
+                  <option value="Informatika">Informatika </option>
+                  <option value="Teknologi Pulp & Kertas">Teknologi Pulp & Kertas</option>
+                  <option value="Teknik Pertambangan">Teknik Pertambangan</option>
+                  <option value="Teknik Perminyakan">Teknik Perminyakan</option>
+                  <option value="Sains Data">Sains Data</option>
+                  <option value="Bisnis Digital">Bisnis Digital</option>
+                  <option value="Teknologi Pengelolaan Sawit">Teknologi Pengelolaan Sawit</option>
+                  <option value="Pengelolaan & Teknologi Perkebunan">Pengelolaan & Teknologi Perkebunan</option>
+                  <option value="Perencanaan Wilayah & Kota">Perencanaan Wilayah & Kota</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="wasteType">Jenis Sampah Pilah</label>
+                  <select id="wasteType" class="form-control" required onchange="updateEstimatedPoints()">
+                    <option value="Plastik/PET">Plastik / Botol PET (50 Pts/kg)</option>
+                    <option value="Kertas/Karton">Kertas / Karton (50 Pts/kg)</option>
+                    <option value="Organik">Organik Sisa Makanan/Daun (20 Pts/kg)</option>
+                    <option value="E-Waste">Limbah Elektronik (200 Pts/kg)</option>
+                    <option value="Logam/Kaleng">Logam / Kaleng (100 Pts/kg)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="wasteWeight">Berat Sampah (kg)</label>
+                  <input type="number" id="wasteWeight" class="form-control" step="0.1" min="0.1"
+                    placeholder="Contoh: 2.5" required oninput="updateEstimatedPoints()">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="wasteLocation">Lokasi Drop Point</label>
+                <select id="wasteLocation" class="form-control" required>
+                  <option value="Drop Point Gedung Utama Rektorat">Drop Point Gedung Utama Rektorat</option>
+                  <option value="Bank Sampah Lab Terpadu">Bank Sampah Lab Terpadu</option>
+                  <option value="Pojok Pengomposan Kantin Sehat">Pojok Pengomposan Kantin Sehat</option>
+                  <option value="Drop Point Gedung Perpustakaan">Drop Point Gedung Perpustakaan</option>
+                </select>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+                <div style="font-size:0.82rem; font-weight:700; color:var(--color-accent-forest);">
+                  Estimasi Perolehan: <span id="estPointsBadge">0 Pts</span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" id="btnSubmitWaste">
+                  Catat Setoran
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Top Champions Leaderboard -->
+          <div class="card">
+            <h3 style="font-size:1rem; font-weight:700; margin-bottom:0.25rem;">Top Eco-Champions</h3>
+            <p style="font-size:0.75rem; color:var(--color-ink-muted); margin-bottom:1rem;">Civitas terdepan dalam
+              kontribusi daur ulang.</p>
+            <ul class="leaderboard-list" id="leaderboardContainer">
+              <!-- Populated by JS -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Catalog Eco-Rewards -->
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+            <div>
+              <h3 style="font-size:1.35rem; font-weight:800; color:var(--color-ink);">Katalog Penukaran Eco-Rewards</h3>
+              <p style="font-size:0.85rem; color:var(--color-ink-muted);">Gunakan akumulasi Eco-Points untuk klaim
+                perlengkapan ramah lingkungan resmi kampus ITSB.</p>
+            </div>
+            <span
+              style="font-size:0.78rem; font-weight:600; color:var(--color-accent-forest); background:var(--color-accent-light); padding:0.35rem 0.75rem; border-radius:var(--radius-full);">Stok
+              Terverifikasi</span>
+          </div>
+
+          <div class="rewards-grid" id="rewardsCatalogContainer">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FR-03: GERAKAN INISIATIF & KOMUNITAS HIJAU -->
+    <section class="section-block" id="initiatives">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FR-03 • Komunitas & Gerakan Kampus</div>
+          <h2 class="section-title">Inisiatif Keberlanjutan Civitas ITSB</h2>
+          <p class="section-subtitle">
+            Aksi nyata mahasiswa, himpunan, dan dosen dalam merawat ekosistem kampus hijau Kota Deltamas Cikarang.
+          </p>
+        </div>
+
+        <div class="initiatives-grid" id="initiativesContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- FR-04: KALKULATOR JEJAK KARBON CIVITAS -->
+    <section class="section-block" id="calculator">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FR-04 • Audit Karbon Mandiri</div>
+          <h2 class="section-title">Kalkulator Jejak Karbon Komuter Kampus ITSB</h2>
+          <p class="section-subtitle">
+            Hitung emisi harian perjalanan Anda ke Kampus Deltamas, dapatkan rekomendasi mitigasi, dan unduh sertifikat
+            komitmen hijau digital.
+          </p>
+        </div>
+
+        <div class="calc-container">
+          <!-- Input Form Column -->
+          <div class="card">
+            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:1.25rem;">Parameter Mobilitas & Energi Harian
+            </h3>
+
+            <div class="form-group">
+              <label class="form-label">Peran Civitas Akademika</label>
+              <div style="display:flex; gap:0.75rem;">
+                <label
+                  style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.85rem; font-weight:600; cursor:pointer;">
+                  <input type="radio" name="calcRole" value="Mahasiswa" checked> Mahasiswa
+                </label>
+                <label
+                  style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.85rem; font-weight:600; cursor:pointer;">
+                  <input type="radio" name="calcRole" value="Dosen"> Dosen
+                </label>
+                <label
+                  style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.85rem; font-weight:600; cursor:pointer;">
+                  <input type="radio" name="calcRole" value="Tenaga Kependidikan"> Tenaga Kependidikan
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="calcDistance">Jarak Tempuh Satu Arah ke Kampus Deltamas (km): <strong
+                  id="distValLabel">15 km</strong></label>
+              <input type="range" id="calcDistance" min="1" max="60" value="15" step="1"
+                style="width:100%; accent-color:var(--color-accent-emerald);"
+                oninput="document.getElementById('distValLabel').innerText = this.value + ' km'; calculateCarbon();">
+              <div
+                style="display:flex; justify-content:space-between; font-size:0.72rem; color:var(--color-ink-muted);">
+                <span>1 km (Kost sekitar kampus)</span>
+                <span>30 km (Bekasi Barat)</span>
+                <span>60 km (Jakarta / Karawang)</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Moda Transportasi Utama</label>
+              <div class="transport-options" id="transportOptionsContainer">
+                <div class="transport-pill active" data-mode="Shuttle Bus Kampus Deltamas"
+                  onclick="selectTransportMode(this)">
+                  <span class="transport-icon">🚌</span>
+                  <div>
+                    <div class="transport-text-title">Shuttle Bus Kampus</div>
+                    <div class="transport-text-factor">0.045 kg CO₂/km</div>
+                  </div>
+                </div>
+
+                <div class="transport-pill" data-mode="Sepeda / Jalan Kaki" onclick="selectTransportMode(this)">
+                  <span class="transport-icon">🚲</span>
+                  <div>
+                    <div class="transport-text-title">Sepeda / Jalan</div>
+                    <div class="transport-text-factor">0.000 kg CO₂/km</div>
+                  </div>
+                </div>
+
+                <div class="transport-pill" data-mode="Motor Listrik (EV)" onclick="selectTransportMode(this)">
+                  <span class="transport-icon">⚡</span>
+                  <div>
+                    <div class="transport-text-title">Motor Listrik (EV)</div>
+                    <div class="transport-text-factor">0.035 kg CO₂/km</div>
+                  </div>
+                </div>
+
+                <div class="transport-pill" data-mode="KRL Commuterline + Feeder" onclick="selectTransportMode(this)">
+                  <span class="transport-icon">🚆</span>
+                  <div>
+                    <div class="transport-text-title">KRL + Feeder</div>
+                    <div class="transport-text-factor">0.030 kg CO₂/km</div>
+                  </div>
+                </div>
+
+                <div class="transport-pill" data-mode="Sepeda Motor Bensin" onclick="selectTransportMode(this)">
+                  <span class="transport-icon">🛵</span>
+                  <div>
+                    <div class="transport-text-title">Motor Bensin</div>
+                    <div class="transport-text-factor">0.105 kg CO₂/km</div>
+                  </div>
+                </div>
+
+                <div class="transport-pill" data-mode="Mobil Pribadi Bensin" onclick="selectTransportMode(this)">
+                  <span class="transport-icon">🚗</span>
+                  <div>
+                    <div class="transport-text-title">Mobil Pribadi</div>
+                    <div class="transport-text-factor">0.192 kg CO₂/km</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="calcHours">Durasi Penggunaan Komputer Lab / AC (Jam/Hari): <strong
+                  id="hoursValLabel">4 Jam</strong></label>
+              <input type="range" id="calcHours" min="0" max="12" value="4" step="1"
+                style="width:100%; accent-color:var(--color-accent-emerald);"
+                oninput="document.getElementById('hoursValLabel').innerText = this.value + ' Jam'; calculateCarbon();">
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;" onclick="submitCarbonPledge()">
+              Simpan Komitmen & Terbitkan E-Certificate
+            </button>
+          </div>
+
+          <!-- Certificate Output Column -->
+          <div>
+            <div class="certificate-preview" id="certificateBox">
+              <div class="cert-watermark">ITSB</div>
+              <div class="cert-header">
+                <div class="cert-institution">Institut Teknologi Sains Bandung</div>
+                <div class="cert-title">Green Civitas Carbon Pledge</div>
+                <div style="font-size:0.75rem; color:var(--color-ink-muted); margin-top:0.25rem;">Kampus Kota Deltamas •
+                  Sertifikat Komitmen Net-Zero</div>
+              </div>
+
+              <div class="cert-gauge-box">
+                <div
+                  style="font-size:0.75rem; color:var(--color-ink-muted); font-weight:600; text-transform:uppercase;">
+                  Estimasi Jejak Karbon Harian</div>
+                <div class="cert-emission-val" id="certEmissionVal">2.54 <span
+                    style="font-size:1.1rem; font-weight:600;">kg CO₂e</span></div>
+                <div class="cert-badge-grade" id="certGradeBadge">Peringkat A (Ramah Lingkungan)</div>
+              </div>
+
+              <div style="font-size:0.82rem; margin-bottom:1.25rem; line-height:1.5;">
+                <div
+                  style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid #e2ebe5;">
+                  <span style="color:var(--color-ink-muted);">Emisi Komuter:</span>
+                  <strong id="certCommuteVal">1.35 kg CO₂e</strong>
+                </div>
+                <div
+                  style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid #e2ebe5;">
+                  <span style="color:var(--color-ink-muted);">Emisi Listrik:</span>
+                  <strong id="certElectricVal">1.19 kg CO₂e</strong>
+                </div>
+                <div
+                  style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid #e2ebe5;">
+                  <span style="color:var(--color-ink-muted);">Kompensasi Pohon:</span>
+                  <strong id="certTreesVal">42 Pohon/Tahun</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:0.4rem 0;">
+                  <span style="color:var(--color-ink-muted);">Kode Verifikasi:</span>
+                  <strong id="certCode"
+                    style="color:var(--color-accent-forest); font-family:monospace;">ITSB-PLEDGE-LIVE</strong>
+                </div>
+              </div>
+
+              <div
+                style="background:#ffffff; border:1px solid var(--color-border-hairline); border-radius:var(--radius-md); padding:0.85rem; font-size:0.75rem; color:var(--color-ink-secondary);"
+                id="certRecommendation">
+                Jejak karbon Anda terkendali dengan baik. Pertahankan penggunaan shuttle kampus dan efisiensi listrik
+                lab.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FR-05: LAPOR KAMPUS (ECO-REPORT) -->
+    <section class="section-block" id="reports">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FR-05 • Audit Partisipatif</div>
+          <h2 class="section-title">Lapor Kampus: Audit & Penanganan Fasilitas Lingkungan</h2>
+          <p class="section-subtitle">
+            Laporkan inefisiensi energi, kebocoran air, atau tumpukan sampah liar di area kampus ITSB secara transparan
+            dengan penanganan oleh tim Estate Management.
+          </p>
+        </div>
+
+        <div class="reports-toolbar">
+          <div class="filter-pills">
+            <button class="filter-btn active" onclick="filterReports('Semua', this)">Semua Isu</button>
+            <button class="filter-btn" onclick="filterReports('Kebocoran Air', this)">Kebocoran Air</button>
+            <button class="filter-btn" onclick="filterReports('Pemborosan Energi', this)">Pemborosan Energi</button>
+            <button class="filter-btn" onclick="filterReports('Tumpukan Sampah', this)">Tumpukan Sampah</button>
+            <button class="filter-btn" onclick="filterReports('Kerusakan Fasilitas Hijau', this)">Fasilitas
+              Hijau</button>
+          </div>
+
+          <button class="btn btn-primary btn-sm" onclick="openModal('reportModal')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Buat Laporan Baru
+          </button>
+        </div>
+
+        <div class="reports-grid" id="reportsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-group" style="margin-bottom: 1.25rem;">
+            <div class="brand-emblem">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </div>
+            <div class="brand-text-col">
+              <span class="brand-name">ITSB EcoPulse</span>
+              <span class="brand-subtitle">Green Campus Initiative</span>
+            </div>
+          </div>
+          <p style="font-size:0.82rem; color:var(--color-ink-muted); line-height:1.6; max-width:320px;">
+            Platform resmi pemantauan lingkungan & keberlanjutan Institut Teknologi Sains Bandung. Kawasan Kampus
+            Terpadu Kota Deltamas, Cikarang Pusat, Kabupaten Bekasi, Jawa Barat.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Fokus Keberlanjutan</h4>
+          <ul class="footer-links">
+            <li><a href="#telemetry" class="footer-link">Rooftop Solar Photovoltaic 120 kWp</a></li>
+            <li><a href="#waste" class="footer-link">Sirkularitas Bank Sampah & Kompos</a></li>
+            <li><a href="#telemetry" class="footer-link">Pemanenan Air Hujan & Eco-Lake</a></li>
+            <li><a href="#initiatives" class="footer-link">Arboretum & Keanekaragaman Hayati</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Civitas & Partisipasi</h4>
+          <ul class="footer-links">
+            <li><a href="#calculator" class="footer-link">Kalkulator Jejak Karbon Komuter</a></li>
+            <li><a href="#initiatives" class="footer-link">Pendaftaran Duta Eco-Ambassador</a></li>
+            <li><a href="#waste" class="footer-link">Penukaran Poin Eco-Rewards</a></li>
+            <li><a href="#reports" class="footer-link">Audit & Pengaduan Lapor Kampus</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Kemitraan Strategis</h4>
+          <p style="font-size:0.82rem; color:var(--color-ink-muted); line-height:1.6;">
+            Dipelopori bersama oleh <strong>Institut Teknologi Bandung (ITB)</strong>, <strong>Sinar Mas</strong>, dan
+            <strong>Pemerintah Kabupaten Bekasi</strong> untuk mewujudkan pendidikan tinggi berwawasan industri ramah
+            lingkungan.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Institut Teknologi Sains Bandung (ITSB). Seluruh hak cipta dilindungi.</div>
+        <div>Sertifikasi Green Building Council Indonesia (GBCI) • Sistem Versi 2.0.0</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: LAPOR ISU LINGKUNGAN (FR-05) -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Formulir Lapor Masalah Lingkungan</h3>
+        <button class="modal-close-btn" onclick="closeModal('reportModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="newReportForm" onsubmit="handleNewReportSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="repTitle">Judul Laporan Singkat</label>
+            <input type="text" id="repTitle" class="form-control"
+              placeholder="Contoh: Kran Air Wastafel Menetes di Gedung Rektorat" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="repCategory">Kategori Masalah</label>
+              <select id="repCategory" class="form-control" required>
+                <option value="Kebocoran Air">Kebocoran Air</option>
+                <option value="Pemborosan Energi">Pemborosan Energi (AC/Lampu)</option>
+                <option value="Tumpukan Sampah">Tumpukan Sampah / Tempat Sampah Penuh</option>
+                <option value="Kerusakan Fasilitas Hijau">Kerusakan Fasilitas Hijau / Tanaman</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="repPriority">Tingkat Urgensi</label>
+              <select id="repPriority" class="form-control" required>
+                <option value="Sedang">Sedang</option>
+                <option value="Tinggi">Tinggi (Mendesak)</option>
+                <option value="Rendah">Rendah (Pencegahan)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="repLocation">Lokasi Spesifik di Kampus</label>
+            <input type="text" id="repLocation" class="form-control"
+              placeholder="Contoh: Gedung Lab Terpadu, Toilet Lantai 2 Sayap Barat" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="repDesc">Deskripsi Rinci</label>
+            <textarea id="repDesc" class="form-control" rows="3"
+              placeholder="Jelaskan kondisi kebocoran atau inefisiensi yang Anda temukan..." required></textarea>
+          </div>
+
+          <!-- Foto Bukti Lapangan (Upload & Preview) -->
+          <div class="form-group">
+            <label class="form-label">Foto Bukti Lapangan (Opsional)</label>
+            <div class="file-dropzone" id="reportDropzone">
+              <input type="file" id="repPhoto" accept="image/png, image/jpeg, image/jpg" class="file-dropzone-input">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+                <div class="dropzone-title">Unggah Foto Bukti Lapangan (Opsional - JPG/PNG)</div>
+                <div class="dropzone-hint">Seret & lepas foto di sini, atau <span class="dropzone-browse">Pilih Berkas</span></div>
+              </div>
+            </div>
+
+            <div class="photo-preview-wrapper" id="photoPreviewWrapper" style="display: none;">
+              <div class="photo-preview-card">
+                <img id="photoPreviewImg" class="photo-preview-thumb" src="" alt="Thumbnail Foto Bukti">
+                <div class="photo-preview-details">
+                  <div class="photo-preview-filename" id="photoPreviewName">foto-bukti.jpg</div>
+                  <div class="photo-preview-meta">
+                    <span id="photoPreviewSize" class="photo-preview-size">0 KB</span>
+                    <span class="photo-preview-badge">Bukti Terlampir</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-remove-photo" id="btnRemovePhoto" title="Hapus atau pilih foto lain">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  Hapus / Ganti Foto
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="repName">Nama Pelapor</label>
+              <input type="text" id="repName" class="form-control" placeholder="Nama mahasiswa/dosen/staf" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="repContact">Kontak / Email ITSB</label>
+              <input type="email" id="repContact" class="form-control" placeholder="email@students.itsb.ac.id">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('reportModal')">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitReport">Kirim Laporan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KLAIM REWARD (FR-02) -->
+  <div class="modal-overlay" id="redeemModal">
+    <div class="modal-window redeem-modal-window">
+
+      <!-- STEP 1: KONFIRMASI PENUKARAN -->
+      <div id="redeemConfirmStep">
+        <div class="modal-header">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:1.25rem;">🎁</span>
+            <h3 class="modal-title" id="redeemModalTitle">Konfirmasi Penukaran Eco-Reward</h3>
+          </div>
+          <button class="modal-close-btn" type="button" onclick="closeRedeemModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="redeemRewardForm" onsubmit="handleRedeemSubmit(event)">
+            <input type="hidden" id="redeemRewardId">
+            <input type="hidden" id="redeemRewardPoints">
+            <input type="hidden" id="redeemRewardTitle">
+
+            <!-- Item Summary Card -->
+            <div class="redeem-summary-card">
+              <div class="redeem-summary-top">
+                <span class="reward-badge-tag" id="redeemItemBadge">Merchandise</span>
+                <span class="reward-points-pill" id="redeemItemPoints">🪙 500 Pts</span>
+              </div>
+              <h4 class="redeem-item-name" id="redeemItemName">Tumbler Stainless Steel ITSB Eco-Campus</h4>
+              <p class="redeem-item-desc" id="redeemItemDesc">
+                Tumbler insulasi termal dengan logo grafir resmi ITSB Green Campus.
+              </p>
+              <div class="redeem-summary-footer">
+                <span class="redeem-stock-text" id="redeemItemStock">Tersedia: <strong>35 unit</strong></span>
+                <span class="redeem-point-notice">Poin akan dipotong setelah voucher terbit</span>
+              </div>
+            </div>
+
+            <!-- Civitas Identity Form -->
+            <div class="form-group" style="margin-top:1.25rem;">
+              <label class="form-label" for="redeemStudentId">NIM Mahasiswa / ID Civitas</label>
+              <input type="text" id="redeemStudentId" class="form-control" placeholder="Contoh: 12220014"
+                value="12220014" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="redeemStudentName">Nama Lengkap Penerima</label>
+              <input type="text" id="redeemStudentName" class="form-control" placeholder="Nama lengkap sesuai KTM/KTP"
+                value="Aditya Pratama" required>
+            </div>
+
+            <div class="redeem-prompt-alert">
+              <span style="font-size:1.1rem; line-height:1;">ℹ️</span>
+              <p style="font-size:0.8rem; margin:0; color:var(--color-ink-secondary); line-height:1.45;">
+                Klik <strong>Konfirmasi & Terbitkan Voucher</strong> untuk menerbitkan E-Voucher resmi dengan QR Code
+                untuk klaim langsung di Kampus ITSB Deltamas.
+              </p>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+              <button type="button" class="btn btn-secondary" onclick="closeRedeemModal()">Batal</button>
+              <button type="submit" class="btn btn-primary" id="btnConfirmRedeem">
+                <span>Konfirmasi & Terbitkan Voucher</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- STEP 2: E-VOUCHER BERHASIL DITERBITKAN -->
+      <div id="redeemSuccessStep" style="display:none;">
+        <div class="modal-header voucher-modal-header">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span class="voucher-success-icon">✓</span>
+            <div>
+              <h3 class="modal-title" style="color:var(--color-accent-forest); margin-bottom:0.15rem;">E-Voucher
+                Berhasil Diterbitkan!</h3>
+              <p style="font-size:0.75rem; color:var(--color-ink-muted); margin:0;">Klaim penukaran merchandise ramah
+                lingkungan ITSB</p>
+            </div>
+          </div>
+          <button class="modal-close-btn" type="button" onclick="closeRedeemModal()">&times;</button>
+        </div>
+
+        <div class="modal-body" style="padding-top:1.25rem;">
+          <!-- Official Campus E-Voucher Ticket Card -->
+          <div class="voucher-ticket-card" id="printableVoucherArea">
+            <div class="voucher-ticket-header">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <div class="voucher-logo-badge">ITSB</div>
+                <div>
+                  <div class="voucher-inst-title">INSTITUT TEKNOLOGI SAINS BANDUNG</div>
+                  <div class="voucher-inst-sub">EcoPulse • Program Sirkular & Keberlanjutan Kampus</div>
+                </div>
+              </div>
+              <span class="voucher-active-badge">VOUCHER AKTIF</span>
+            </div>
+
+            <div class="voucher-ticket-body">
+              <div class="voucher-item-details">
+                <span class="reward-badge-tag" id="voucherItemBadge">Merchandise</span>
+                <h3 class="voucher-reward-title" id="voucherRewardTitle">Tumbler Stainless Steel ITSB Eco-Campus</h3>
+                <div class="voucher-points-tag" id="voucherPointsBadge">🪙 500 Eco-Points Telah Dipotong</div>
+              </div>
+
+              <!-- QR Code & Unique Claim Code -->
+              <div class="voucher-qr-section">
+                <div class="voucher-qr-wrapper">
+                  <img id="voucherQrImage" class="voucher-qr-image" src=""
+                    alt="QR Code Penukaran Voucher ITSB Eco-Rewards" width="160" height="160">
+                  <span class="voucher-qr-hint">Scan di Loket Kampus</span>
+                </div>
+                <div class="voucher-code-block">
+                  <div class="voucher-code-caption">KODE KLAIM E-VOUCHER</div>
+                  <div class="voucher-code-display" id="voucherClaimCode">ITSB-REWARD-84920</div>
+                  <div class="voucher-meta-grid">
+                    <div>
+                      <span class="voucher-meta-label">Nama Penerima:</span>
+                      <strong class="voucher-meta-val" id="voucherRecipientName">Aditya Pratama</strong>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">NIM / ID Staf:</span>
+                      <strong class="voucher-meta-val" id="voucherRecipientId">12220014</strong>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">Waktu Diterbitkan:</span>
+                      <span class="voucher-meta-val" id="voucherIssuedAt">22 Okt 2026, 22:30 WIB</span>
+                    </div>
+                    <div>
+                      <span class="voucher-meta-label">Status Voucher:</span>
+                      <span class="voucher-meta-val" style="color:var(--color-accent-forest); font-weight:700;">Belum
+                        Ditukarkan</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perforated Divider Effect -->
+            <div class="voucher-perforated-line">
+              <span class="notch notch-left"></span>
+              <span class="notch notch-right"></span>
+            </div>
+
+            <!-- Campus Pickup Instructions -->
+            <div class="voucher-instructions">
+              <h5 class="instructions-heading">
+                <span>📍</span> Instruksi Penukaran di Kampus ITSB Deltamas:
+              </h5>
+              <ol class="instructions-list">
+                <li>Tunjukkan gambar <strong>QR Code</strong> atau sebutkan <strong>Kode Klaim E-Voucher</strong> di
+                  atas kepada petugas Sustainability Center / Bank Sampah Sirkular di <strong>Lantai 1 Gedung Rektorat
+                    Kampus ITSB Deltamas, Cikarang</strong>.</li>
+                <li>Tunjukkan <strong>Kartu Tanda Mahasiswa (KTM)</strong> atau identitas civitas akademika aktif Anda
+                  sebagai bukti kepemilikan akun EcoPulse.</li>
+                <li>Layanan penukaran merchandise dibuka setiap hari kerja (<strong>Senin – Jumat, pukul 08.30 – 16.00
+                    WIB</strong>).</li>
+                <li>E-Voucher ini berlaku selama <strong>14 hari kalender</strong> sejak waktu penerbitan.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="voucher-modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="printVoucher()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span>Cetak / Simpan Voucher</span>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="closeRedeemModal()">
+              <span>Selesai & Tutup</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: DAFTAR RELAWAN INISIATIF (FR-03) -->
+  <div class="modal-overlay" id="volunteerModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" id="volModalTitle">Pendaftaran Relawan Hijau</h3>
+        <button class="modal-close-btn" onclick="closeModal('volunteerModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="volunteerForm" onsubmit="handleVolunteerSubmit(event)">
+          <input type="hidden" id="volInitiativeId">
+          <p style="font-size:0.85rem; color:var(--color-ink-muted); margin-bottom:1.25rem;" id="volModalDesc">
+            Bergabunglah dalam aksi pelestarian lingkungan kampus.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="volFullName">Nama Lengkap</label>
+            <input type="text" id="volFullName" class="form-control" placeholder="Nama lengkap Anda" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="volEmail">Email Kampus ITSB</label>
+            <input type="email" id="volEmail" class="form-control" placeholder="nama@students.itsb.ac.id" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="volDepartment">Program Studi / Divisi</label>
+            <input type="text" id="volDepartment" class="form-control"
+              placeholder="Contoh: Teknologi Pengolahan Sawit 2024" required>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('volunteerModal')">Batal</button>
+            <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App Script -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>
