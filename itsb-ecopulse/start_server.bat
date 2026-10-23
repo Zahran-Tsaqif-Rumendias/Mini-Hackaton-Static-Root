@@ -9,13 +9,21 @@ echo.
 
 cd /d "%~dp0"
 
+:: Deteksi ketersediaan py launcher atau python biasa
+where py >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    set PY_EXE=py
+) else (
+    set PY_EXE=python
+)
+
 :: Pastikan dependensi terpasang
-python -m pip install -q -r requirements.txt
+%PY_EXE% -m pip install -q -r requirements.txt
 
 :: Buka browser secara otomatis
 start http://127.0.0.1:8000
 
 :: Jalankan backend server
-python run.py
+%PY_EXE% run.py
 
 pause
