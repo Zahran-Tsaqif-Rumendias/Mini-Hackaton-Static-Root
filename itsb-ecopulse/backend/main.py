@@ -8,7 +8,7 @@ import random
 import datetime
 import uuid      
 from typing import Optional, List
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -74,6 +74,7 @@ class EcoReportRequest(BaseModel):
     reporter_name: str = Field(..., min_length=2, example="Fajar Hidayat")
     reporter_contact: Optional[str] = "fajar@students.itsb.ac.id"
     priority: Optional[str] = "Sedang"
+    photo_url: Optional[str] = None
     photo_data: Optional[str] = None
 
 
@@ -614,8 +615,8 @@ def submit_eco_report(report: EcoReportRequest):
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO eco_reports 
-        (ticket_number, title, location, category, description, reporter_name, reporter_contact, priority, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Diajukan')
+        (ticket_number, title, location, category, description, reporter_name, reporter_contact, priority, status, photo_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Diajukan', ?)
     """, (
         ticket_num,
         report.title,
@@ -624,7 +625,8 @@ def submit_eco_report(report: EcoReportRequest):
         report.description,
         report.reporter_name,
         report.reporter_contact,
-        report.priority
+        report.priority,
+        report.photo_url
     ))
     conn.commit()
     conn.close()
@@ -634,7 +636,35 @@ def submit_eco_report(report: EcoReportRequest):
         "ticket_number": ticket_num,
         "title": report.title,
         "status": "Diajukan",
-        "location": report.location
+        "location": report.location,
+        "photo_url": report.photo_url
+    }
+
+
+@app.post("/api/reports/upload-photo")
+async def upload_report_photo(file: UploadFile = File(...)):
+    """Upload photo evidence for eco report (JPG, PNG, WEBP)."""
+    valid_content_types = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
+    if file.content_type not in valid_content_types:
+        raise HTTPException(status_code=400, detail="Format file harus berupa gambar (JPG atau PNG)")
+
+    uploads_dir = os.path.join(STATIC_DIR, "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+
+    ext = os.path.splitext(file.filename or "")[1].lower() or ".jpg"
+    unique_filename = f"report_{uuid.uuid4().hex[:10]}{ext}"
+    file_path = os.path.join(uploads_dir, unique_filename)
+
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Ukuran foto maksimal 5 MB")
+
+    with open(file_path, "wb") as f:
+        f.write(content)
+
+    return {
+        "photo_url": f"/uploads/{unique_filename}",
+        "filename": unique_filename
     }
 
 
@@ -653,18 +683,16 @@ def get_report_detail(ticket_number: str):
     return {"report": dict(row)}
 
 
-# ----------------- STATIC ASSETS & ROOT SPA -----------------
-
 STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 
 if os.path.isdir(STATIC_DIR):
     # Mount sub-folders at top-level paths so that relative URLs in index.html
-    # (e.g. "css/style.css", "js/app.js", "assets/images/...") resolve correctly
+    # (e.g. "css/style.css", "js/app.js", "assets/images/...", "uploads/...") resolve correctly
     # when the page is served from the root route "/".
-    for folder in ["css", "js", "assets"]:
+    for folder in ["css", "js", "assets", "uploads"]:
         folder_path = os.path.join(STATIC_DIR, folder)
-        if os.path.isdir(folder_path):
-            app.mount(f"/{folder}", StaticFiles(directory=folder_path), name=folder)
+        os.makedirs(folder_path, exist_ok=True)
+        app.mount(f"/{folder}", StaticFiles(directory=folder_path), name=folder)
     # Also mount the full static dir for direct /static/... access
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

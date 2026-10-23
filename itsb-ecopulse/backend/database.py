@@ -123,9 +123,16 @@ def init_db():
         priority TEXT DEFAULT 'Sedang',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        resolution_notes TEXT
+        resolution_notes TEXT,
+        photo_url TEXT
     );
     """)
+
+    # Auto-migration: Tambahkan kolom photo_url jika tabel eco_reports sudah ada sebelumnya
+    cursor.execute("PRAGMA table_info(eco_reports)")
+    existing_cols = [row[1] for row in cursor.fetchall()]
+    if "photo_url" not in existing_cols:
+        cursor.execute("ALTER TABLE eco_reports ADD COLUMN photo_url TEXT")
 
     # 8. Carbon Footprint Logs (FR-04)
     cursor.execute("""
