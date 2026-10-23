@@ -510,7 +510,7 @@
                   <option value="Teknik Metalurgi">Teknik Metalurgi</option>
                   <option value="Teknik Sipil">Teknik Sipil</option>
                   <option value="Desain Produk">Desain Produk</option>
-                  <option value="Informatika">Informatika </option>
+                  <option value="Teknik Informatika">Teknik Informatika</option>
                   <option value="Teknologi Pulp & Kertas">Teknologi Pulp & Kertas</option>
                   <option value="Teknik Pertambangan">Teknik Pertambangan</option>
                   <option value="Teknik Perminyakan">Teknik Perminyakan</option>
@@ -562,11 +562,40 @@
           </div>
 
           <!-- Top Champions Leaderboard -->
-          <div class="card">
-            <h3 style="font-size:1rem; font-weight:700; margin-bottom:0.25rem;">Top Eco-Champions</h3>
-            <p style="font-size:0.75rem; color:var(--color-ink-muted); margin-bottom:1rem;">Civitas terdepan dalam
-              kontribusi daur ulang.</p>
-            <ul class="leaderboard-list" id="leaderboardContainer">
+          <div class="card" id="leaderboardCard">
+            <div class="leaderboard-card-header">
+              <div>
+                <h3 style="font-size:1rem; font-weight:700; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.45rem;">
+                  <span>Top Eco-Champions</span>
+                  <span class="leaderboard-live-indicator" title="Pembaruan Real-Time Aktif"></span>
+                </h3>
+                <p id="leaderboardSubtitle" style="font-size:0.75rem; color:var(--color-ink-muted); margin-bottom:0;">Civitas terdepan dalam kontribusi daur ulang.</p>
+              </div>
+
+              <!-- Modern Tab Switch: [ Individu | Antar Prodi ] -->
+              <div class="leaderboard-tabs" role="tablist" aria-label="Mode Papan Peringkat">
+                <button type="button" class="leaderboard-tab-btn active" id="tabIndividu" role="tab"
+                  aria-selected="true" aria-controls="leaderboardContainer" onclick="switchLeaderboardTab('individu')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span>Individu</span>
+                </button>
+                <button type="button" class="leaderboard-tab-btn" id="tabProdi" role="tab"
+                  aria-selected="false" aria-controls="leaderboardContainer" onclick="switchLeaderboardTab('prodi')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                  <span>Antar Prodi</span>
+                </button>
+              </div>
+            </div>
+
+            <ul class="leaderboard-list" id="leaderboardContainer" role="tabpanel" aria-live="polite">
               <!-- Populated by JS -->
             </ul>
           </div>
