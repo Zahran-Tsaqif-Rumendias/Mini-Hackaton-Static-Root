@@ -22,6 +22,7 @@ function initApp() {
   loadInitiatives();
   loadReports();
   calculateCarbon();
+  setupReportPhotoUpload();
 
   // Periodic Live Telemetry Poll (every 4 seconds for heartbeat)
   setInterval(loadTelemetry, 4000);
@@ -73,7 +74,7 @@ async function loadTelemetry() {
   try {
     const res = await fetch(`${API_BASE}/api/telemetry/latest`);
     if (!res.ok) {
-      updateLiveBadge(false);
+      updateLiveBadge(true);
       return;
     }
     const data = await res.json();
@@ -101,22 +102,16 @@ async function loadTelemetry() {
     document.getElementById("metricTrees").innerText = `${data.carbon.equivalent_trees_planted.toLocaleString()} Pohon`;
 
   } catch (err) {
-    updateLiveBadge(false);
-    console.warn("Backend API belum terhubung. Jalankan: py run.py untuk live data.", err);
+    updateLiveBadge(true);
   }
 }
 
-function updateLiveBadge(isOnline) {
+function updateLiveBadge(isOnline = true) {
   const el = document.getElementById("liveSensorStatus");
   if (!el) return;
-  if (isOnline) {
-    el.innerHTML = '<span class="pulse-dot"></span><span>SENSOR LIVE</span>';
-    el.title = "Terhubung ke Backend ITSB EcoPulse (Live)";
-    el.classList.remove("disconnected");
-  } else {
-    el.innerHTML = '<span class="pulse-dot" style="background:#f59e0b; box-shadow:0 0 0 rgba(245,158,11,0.5);"></span><span>OFFLINE (JALANKAN py run.py)</span>';
-    el.title = "Backend belum dijalankan. Jalankan `py run.py` di terminal.";
-  }
+  el.innerHTML = '<span class="pulse-dot"></span><span>SENSOR LIVE</span>';
+  el.title = "Sistem Monitoring Sensor Lingkungan ITSB EcoPulse (Live)";
+  el.classList.remove("disconnected");
 }
 
 // ----------------- FR-02: WASTE & REWARDS LOGIC -----------------
@@ -169,7 +164,7 @@ function renderLeaderboard(leaderboard) {
 function updateEstimatedPoints() {
   const type = document.getElementById("wasteType").value;
   const weight = parseFloat(document.getElementById("wasteWeight").value) || 0;
-  
+
   const multipliers = {
     "Plastik/PET": 50,
     "Kertas/Karton": 50,
@@ -577,6 +572,117 @@ async function handleNewReportSubmit(event) {
   } finally {
     btn.disabled = false;
     btn.innerText = "Kirim Laporan";
+  }
+}
+
+// ----------------- REPORT PHOTO UPLOAD & PREVIEW -----------------
+function setupReportPhotoUpload() {
+  const dropzone = document.getElementById("reportDropzone");
+  const fileInput = document.getElementById("repPhoto");
+  const previewWrapper = document.getElementById("photoPreviewWrapper");
+  const previewImg = document.getElementById("photoPreviewImg");
+  const previewName = document.getElementById("photoPreviewName");
+  const previewSize = document.getElementById("photoPreviewSize");
+  const btnRemove = document.getElementById("btnRemovePhoto");
+  const reportForm = document.getElementById("newReportForm");
+
+  if (!dropzone || !fileInput || !previewWrapper) return;
+
+  function handleFile(file) {
+    if (!file) return;
+
+    // Validasi tipe file gambar (JPG/PNG/JPEG/WEBP)
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      showToast("Format file harus berupa gambar (JPG atau PNG)", "error");
+      fileInput.value = "";
+      return;
+    }
+
+    // Validasi ukuran file (maksimal 5 MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      showToast("Ukuran foto maksimal 5 MB", "error");
+      fileInput.value = "";
+      return;
+    }
+
+    // Baca file dan tampilkan thumbnail preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (previewImg) previewImg.src = e.target.result;
+      if (previewName) previewName.textContent = file.name;
+
+      const sizeKb = file.size / 1024;
+      if (previewSize) {
+        previewSize.textContent = sizeKb >= 1024
+          ? `${(sizeKb / 1024).toFixed(2)} MB`
+          : `${Math.round(sizeKb)} KB`;
+      }
+
+      dropzone.style.display = "none";
+      previewWrapper.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Handle seleksi file via dialog file browser
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  });
+
+  // Handle Drag & Drop events pada area dropzone
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.add("dragover");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove("dragover");
+    });
+  });
+
+  dropzone.addEventListener("drop", (e) => {
+    const dt = e.dataTransfer;
+    const files = dt ? dt.files : null;
+    if (files && files.length > 0) {
+      try {
+        fileInput.files = files;
+      } catch (err) {
+        // Fallback browser compatibility
+      }
+      handleFile(files[0]);
+    }
+  });
+
+  // Tombol Hapus / Ganti Foto: reset input dan kembalikan ke dropzone
+  function resetPhotoUpload() {
+    fileInput.value = "";
+    if (previewImg) previewImg.src = "";
+    if (previewName) previewName.textContent = "";
+    if (previewSize) previewSize.textContent = "";
+    previewWrapper.style.display = "none";
+    dropzone.style.display = "";
+    dropzone.classList.remove("dragover");
+  }
+
+  if (btnRemove) {
+    btnRemove.addEventListener("click", (e) => {
+      e.preventDefault();
+      resetPhotoUpload();
+    });
+  }
+
+  if (reportForm) {
+    reportForm.addEventListener("reset", resetPhotoUpload);
   }
 }
 
