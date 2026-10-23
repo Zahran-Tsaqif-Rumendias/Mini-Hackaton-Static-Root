@@ -24,4 +24,14 @@ if __name__ == "__main__":
     print("   Akses Web : http://127.0.0.1:8000")
     print("   API Docs  : http://127.0.0.1:8000/docs")
     print("=" * 70)
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=False)
+    port = 8000
+    try:
+        uvicorn.run("main:app", host="127.0.0.1", port=port, reload=False)
+    except OSError as e:
+        if getattr(e, "winerror", None) == 10048 or "10048" in str(e):
+            print(f"\n[PERINGATAN] Port {port} sedang digunakan oleh proses lain.")
+            port = 8001
+            print(f"   Beralih otomatis ke Port Alternatif : http://127.0.0.1:{port}")
+            uvicorn.run("main:app", host="127.0.0.1", port=port, reload=False)
+        else:
+            raise

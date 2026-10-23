@@ -1661,3 +1661,387 @@ body {
   .reports-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+
+/* ----------------- THEME TOGGLE BUTTON ----------------- */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-hairline);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-accent-border);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-card);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Light mode defaults: show moon (switch to dark), hide sun */
+.theme-icon.sun-icon {
+  display: none;
+  color: var(--color-solar-amber);
+}
+
+.theme-icon.moon-icon {
+  display: flex;
+  color: var(--color-ink-muted);
+}
+
+/* Dark mode active: show sun (switch to light), hide moon */
+body.dark-mode .theme-icon.sun-icon,
+:root.dark-mode .theme-icon.sun-icon {
+  display: flex;
+}
+
+body.dark-mode .theme-icon.moon-icon,
+:root.dark-mode .theme-icon.moon-icon {
+  display: none;
+}
+
+/* ----------------- REPORT PHOTO UPLOAD & PREVIEW ----------------- */
+.file-dropzone {
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--color-canvas-subtle);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.file-dropzone:hover,
+.file-dropzone.dragover {
+  border-color: var(--color-accent-emerald);
+  background-color: var(--color-accent-light);
+}
+
+.file-dropzone-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dropzone-content {
+  pointer-events: none;
+}
+
+.dropzone-icon {
+  color: var(--color-accent-emerald);
+  margin-bottom: 0.5rem;
+}
+
+.dropzone-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 0.25rem;
+}
+
+.dropzone-hint {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+.dropzone-browse {
+  color: var(--color-accent-emerald);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.photo-preview-wrapper {
+  margin-top: 0.75rem;
+}
+
+.photo-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--radius-md);
+}
+
+.photo-preview-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-hairline);
+}
+
+.photo-preview-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.photo-preview-filename {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photo-preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.photo-preview-size {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+.photo-preview-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent-light);
+  color: var(--color-accent-forest);
+}
+
+.btn-remove-photo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-alert-rose);
+  background-color: var(--color-alert-light);
+  border: 1px solid rgba(225, 29, 72, 0.2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-remove-photo:hover {
+  background-color: var(--color-alert-rose);
+  color: #ffffff;
+}
+
+/* ----------------- ELEGANT FLOATING TOAST NOTIFICATIONS ----------------- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  pointer-events: none;
+  max-width: 420px;
+  width: calc(100% - 3rem);
+}
+
+.toast {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  padding: 0.85rem 1rem 1rem 1rem;
+  overflow: hidden;
+  animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.toast.toast-hiding {
+  animation: toastSlideOut 0.3s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.25;
+  margin-bottom: 0.2rem;
+}
+
+.toast-message {
+  font-size: 0.8rem;
+  color: var(--color-ink-secondary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.toast-close:hover {
+  background-color: var(--color-canvas-subtle);
+  color: var(--color-ink);
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.toast-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+}
+
+/* Toast variants */
+.toast-success {
+  border-left: 4px solid var(--color-accent-emerald);
+}
+.toast-success .toast-icon {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent-forest);
+}
+.toast-success .toast-progress-bar {
+  background-color: var(--color-accent-emerald);
+}
+
+.toast-error {
+  border-left: 4px solid var(--color-alert-rose);
+}
+.toast-error .toast-icon {
+  background-color: var(--color-alert-light);
+  color: var(--color-alert-rose);
+}
+.toast-error .toast-progress-bar {
+  background-color: var(--color-alert-rose);
+}
+
+.toast-info {
+  border-left: 4px solid var(--color-water-cyan);
+}
+.toast-info .toast-icon {
+  background-color: var(--color-water-light);
+  color: var(--color-water-cyan);
+}
+.toast-info .toast-progress-bar {
+  background-color: var(--color-water-cyan);
+}
+
+.toast-warning {
+  border-left: 4px solid var(--color-solar-amber);
+}
+.toast-warning .toast-icon {
+  background-color: var(--color-solar-light);
+  color: var(--color-solar-amber);
+}
+.toast-warning .toast-progress-bar {
+  background-color: var(--color-solar-amber);
+}
+
+/* Dark mode specific tweaks for cards, inputs, and tickets */
+body.dark-mode .voucher-ticket-card {
+  background-color: #122019;
+  border-color: #223b2f;
+}
+body.dark-mode .voucher-ticket-header {
+  background: linear-gradient(135deg, rgba(6, 95, 70, 0.3) 0%, rgba(16, 185, 129, 0.15) 100%);
+  border-bottom-color: #223b2f;
+}
+body.dark-mode .voucher-qr-wrapper {
+  background-color: #ffffff;
+}
+body.dark-mode .voucher-instructions {
+  background-color: rgba(18, 32, 25, 0.7);
+  border-color: #223b2f;
+}
+body.dark-mode .telemetry-live-strip {
+  background-color: #16261f;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+body.dark-mode .redeem-summary-card {
+  background-color: #122019;
+  border-color: #223b2f;
+}
