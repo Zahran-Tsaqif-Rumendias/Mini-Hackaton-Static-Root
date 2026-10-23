@@ -205,7 +205,7 @@ def seed_all():
     cursor.execute("""
         INSERT INTO carbon_calculations 
         (user_role, commute_distance_km, transport_mode, electricity_hours, total_emission_kg, trees_needed, certificate_code, created_at)
-        VALUES ('Mahasiswa', 18.5, 'Shuttle Bus Kampus Deltamas', 4.0, 1.42, 0.08, 'ITSB-PLEDGE-9841', ?)
+        VALUES ('Mahasiswa', 18.5, 'Shuttle Bus Kampus Deltamas', 4.0, 1.42, 23.7, 'ITSB-PLEDGE-9841', ?)
     """, ((now - datetime.timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S"),))
 
     conn.commit()

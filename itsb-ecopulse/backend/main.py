@@ -600,11 +600,15 @@ def get_report_detail(ticket_number: str):
 STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 
 if os.path.isdir(STATIC_DIR):
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    # Mount sub-folders at top-level paths so that relative URLs in index.html
+    # (e.g. "css/style.css", "js/app.js", "assets/images/...") resolve correctly
+    # when the page is served from the root route "/".
     for folder in ["css", "js", "assets"]:
         folder_path = os.path.join(STATIC_DIR, folder)
         if os.path.isdir(folder_path):
             app.mount(f"/{folder}", StaticFiles(directory=folder_path), name=folder)
+    # Also mount the full static dir for direct /static/... access
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
 def serve_spa():

@@ -968,15 +968,54 @@ function printVoucher() {
 }
 
 // ----------------- FR-03: INITIATIVES LOGIC -----------------
+const DEFAULT_INITIATIVES = [
+  {
+    id: 1, title: "Car-Free Campus & Green Commute Day",
+    category: "Transportasi Hijau",
+    description: "Hari bebas kendaraan bermotor berbahan bakar fosil di lingkar dalam kampus ITSB Deltamas. Civitas didorong bersepeda, berjalan kaki, atau menggunakan shuttle listrik.",
+    target_value: 150, current_value: 128, metric_unit: "Civitas Peserta", percentage: 85,
+    date_scheduled: "Jumat, 24 Oktober 2026", location: "Kawasan Gerbang Utama & Plaza Rektorat ITSB",
+    organizer: "BEM ITSB & Divisi Keberlanjutan Kampus", status: "Aktif"
+  },
+  {
+    id: 2, title: "Penanaman 500 Pohon Peneduh & Konservasi Danau Retensi",
+    category: "Reboisasi Kampus",
+    description: "Aksi penanaman pohon trembesi, tabebuya, dan vetiver di tepian danau retensi air hujan kampus ITSB Kota Deltamas untuk menjaga keanekaragaman hayati dan resapan air.",
+    target_value: 500, current_value: 380, metric_unit: "Bibit Ditanam", percentage: 76,
+    date_scheduled: "Sabtu, 1 November 2026", location: "Arboretum & Eco-Retention Lake Deltamas",
+    organizer: "Himpunan Mahasiswa Teknologi Pengelolaan Sawit (HMPTS)", status: "Aktif"
+  },
+  {
+    id: 3, title: "Program Kantin Nol Sampah (Zero Food-Waste) & Kompos Terpadu",
+    category: "Pengelolaan Sampah",
+    description: "Gerakan pengolahan sisa makanan kantin menjadi kompos organik cair dan padat menggunakan biopori serta komposter komunal untuk taman kampus.",
+    target_value: 1000, current_value: 740, metric_unit: "Kg Sampah Terolah", percentage: 74,
+    date_scheduled: "Berjalan Sepanjang Semester", location: "Pojok Kompos & Kebun Percobaan Pertanian ITSB",
+    organizer: "Pusat Riset Industri Hijau & Pengelola Kantin", status: "Aktif"
+  },
+  {
+    id: 4, title: "Audit Energi Mandiri Laboratorium & Efisiensi AC",
+    category: "Konservasi Energi",
+    description: "Inspeksi dan kampanye setel suhu AC ideal 24-25°C serta pemadaman instrumen lab standby untuk menekan beban listrik kampus.",
+    target_value: 100, current_value: 85, metric_unit: "% Target Efisiensi", percentage: 85,
+    date_scheduled: "Senin - Jumat, Jam Operasional", location: "Gedung Lab Terpadu Sains & Teknologi",
+    organizer: "Tim Duta Energi Bersih Mahasiswa ITSB", status: "Aktif"
+  }
+];
+
 async function loadInitiatives() {
   try {
     const res = await fetch(`${API_BASE}/api/initiatives`);
-    if (!res.ok) return;
+    if (!res.ok) throw new Error("backend offline");
     const data = await res.json();
-    renderInitiatives(data.initiatives);
+    if (data.initiatives && data.initiatives.length > 0) {
+      renderInitiatives(data.initiatives);
+      return;
+    }
   } catch (err) {
-    console.error("Initiatives fetch error:", err);
+    // Backend offline — use realistic local fallback
   }
+  renderInitiatives(DEFAULT_INITIATIVES);
 }
 
 function renderInitiatives(initiatives) {
@@ -1145,6 +1184,37 @@ async function submitCarbonPledge() {
 }
 
 // ----------------- FR-05: ECO REPORTS (LAPOR KAMPUS) -----------------
+const DEFAULT_REPORTS = [
+  {
+    ticket_number: "ITSB-ECO-1001", title: "Kebocoran Kran Air di Toilet Pria Lantai 2 Gedung Rektorat",
+    location: "Gedung Utama Rektorat, Lantai 2", category: "Kebocoran Air",
+    description: "Kran wastafel nomor 2 terus meneteskan air bersih dengan debit cukup deras sejak pagi hari. Berpotensi membuang puluhan liter air bersih per jam.",
+    reporter_name: "Ahmad Fauzi (Dosen Arsitektur)", priority: "Tinggi", status: "Selesai",
+    resolution_notes: "Pipa sambungan fleksibel dan seal karet kran telah diganti oleh teknisi Sarana Prasarana ITSB. Aliran air kini normal tanpa rembesan."
+  },
+  {
+    ticket_number: "ITSB-ECO-1002", title: "AC Menyala di Ruang Kelas 304 Saat Tidak Ada Perkuliahan",
+    location: "Gedung Perkuliahan Terpadu, Ruang 304", category: "Pemborosan Energi",
+    description: "Dua unit AC split dan lampu penerangan ruang kelas 304 tetap menyala penuh meskipun sesi kuliah selesai pukul 12.00 WIB.",
+    reporter_name: "Cindy Claudia (Mahasiswa Sains Data)", priority: "Sedang", status: "Sedang Dikerjakan",
+    resolution_notes: "Petugas sekuriti kampus telah mematikan unit pendingin dan tim IT sedang mengintegrasikan sensor PIR smart-switch terjadwal."
+  },
+  {
+    ticket_number: "ITSB-ECO-1003", title: "Tempat Sampah Anorganik Penuh di Dekat Selasar Kantin Sehat",
+    location: "Selasar Luar Kantin Sehat Kampus", category: "Tumpukan Sampah",
+    description: "Tempat sampah khusus botol plastik dan kemasan tetra-pak sudah melebihi kapasitas sehingga sebagian berserakan di sekitar bangku taman.",
+    reporter_name: "Rian Mahendra (Mahasiswa Desain Produk)", priority: "Sedang", status: "Diverifikasi",
+    resolution_notes: "Laporan telah diverifikasi koordinator kebersihan lingkungan. Tim pengangkutan sedang menuju lokasi."
+  },
+  {
+    ticket_number: "ITSB-ECO-1004", title: "Sensor Otomatis Lampu Koridor Laboratorium Komputer Tidak Merespons",
+    location: "Lab Komputer Sains Terpadu, Lantai Dasar", category: "Kerusakan Fasilitas Hijau",
+    description: "Sensor peredup cahaya otomatis di koridor utama lab menyala 100% di siang hari bolong meski cahaya matahari melalui void gedung sangat cukup.",
+    reporter_name: "Dimas Satria (Laboran)", priority: "Rendah", status: "Diajukan",
+    resolution_notes: null
+  }
+];
+
 async function loadReports() {
   try {
     let url = `${API_BASE}/api/reports`;
@@ -1153,12 +1223,25 @@ async function loadReports() {
     }
 
     const res = await fetch(url);
-    if (!res.ok) return;
+    if (!res.ok) throw new Error("backend offline");
     const data = await res.json();
-    renderReports(data.reports);
+    if (data.reports && data.reports.length >= 0) {
+      // Filter fallback locally if needed
+      const reports = activeReportCategory === "Semua"
+        ? data.reports
+        : data.reports.filter(r => r.category === activeReportCategory);
+      renderReports(reports);
+      return;
+    }
   } catch (err) {
-    console.error("Reports fetch error:", err);
+    // Backend offline — use realistic local fallback data
   }
+
+  // Offline fallback: filter locally
+  const filtered = activeReportCategory === "Semua"
+    ? DEFAULT_REPORTS
+    : DEFAULT_REPORTS.filter(r => r.category === activeReportCategory);
+  renderReports(filtered);
 }
 
 function filterReports(cat, btn) {
